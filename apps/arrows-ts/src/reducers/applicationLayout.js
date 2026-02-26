@@ -4,6 +4,7 @@ const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),
   inspectorVisible: true,
   styleMode: 'theme',
+  drawingMode: false,
   betaFeaturesEnabled: false,
   layers: []
 }, action) => {
@@ -51,6 +52,11 @@ const applicationLayout = (state = {
         }
       } else {
         return state
+      }
+    case 'TOGGLE_DRAWING_MODE':
+      return {
+        ...state,
+        drawingMode: !state.drawingMode
       }
     default:
       return state

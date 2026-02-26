@@ -44,6 +44,24 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
       }
     }
 
+    case 'MOUSE_DOWN_ON_ANNOTATION': {
+      return {
+        dragType: 'ANNOTATION',
+        dragged: false,
+        annotation: action.annotation,
+        mousePosition: action.canvasPosition,
+        initialMousePosition: action.canvasPosition
+      }
+    }
+
+    case 'START_DRAWING': {
+      return {
+        dragType: 'DRAWING',
+        dragged: true,
+        mousePosition: action.graphPosition
+      }
+    }
+
     case 'MOVE_NODES':
       const currentPosition = action.newMousePosition || state.mousePosition
       return {

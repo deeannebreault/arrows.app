@@ -6,6 +6,7 @@ import { idsMatch } from "../model/Id";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 import undoable, { groupByActionTypes } from 'redux-undo';
 import {nodeSelected, relationshipSelected} from "../model/selection";
+import {setAnnotationText as modelSetAnnotationText, setAnnotationPosition, setAnnotationStyle as modelSetAnnotationStyle, addDrawingPoint as modelAddDrawingPoint} from "../model/Annotation";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -336,6 +337,67 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'GETTING_GRAPH_SUCCEEDED':
       return action.storedGraph
+
+    // Annotation cases
+    case 'CREATE_TEXT_ANNOTATION':
+      return {
+        ...state,
+        annotations: [...(state.annotations || []), action.annotation]
+      }
+
+    case 'CREATE_DRAWING_ANNOTATION':
+      return {
+        ...state,
+        annotations: [...(state.annotations || []), action.annotation]
+      }
+
+    case 'ADD_DRAWING_POINT':
+      return {
+        ...state,
+        annotations: (state.annotations || []).map(annotation =>
+          annotation.id === action.annotationId
+            ? modelAddDrawingPoint(annotation, action.point)
+            : annotation
+        )
+      }
+
+    case 'SET_ANNOTATION_TEXT':
+      return {
+        ...state,
+        annotations: (state.annotations || []).map(annotation =>
+          annotation.id === action.annotationId
+            ? modelSetAnnotationText(annotation, action.text)
+            : annotation
+        )
+      }
+
+    case 'MOVE_ANNOTATION':
+      return {
+        ...state,
+        annotations: (state.annotations || []).map(annotation =>
+          annotation.id === action.annotationId
+            ? setAnnotationPosition(annotation, action.position)
+            : annotation
+        )
+      }
+
+    case 'SET_ANNOTATION_STYLE':
+      return {
+        ...state,
+        annotations: (state.annotations || []).map(annotation =>
+          annotation.id === action.annotationId
+            ? modelSetAnnotationStyle(annotation, action.style)
+            : annotation
+        )
+      }
+
+    case 'DELETE_ANNOTATION':
+      return {
+        ...state,
+        annotations: (state.annotations || []).filter(annotation =>
+          annotation.id !== action.annotationId
+        )
+      }
 
     default:
       return state

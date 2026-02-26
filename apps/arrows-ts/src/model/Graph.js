@@ -15,6 +15,7 @@ export const emptyGraph = () => {
       properties: {}
     }],
     relationships: [],
+    annotations: [],
     style: completeWithDefaults({})
   }
 }

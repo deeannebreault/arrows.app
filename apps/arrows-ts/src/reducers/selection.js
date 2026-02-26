@@ -151,6 +151,22 @@ export default function selection(state = {
           }))
         ]
       }
+    case 'CREATE_TEXT_ANNOTATION':
+      return {
+        editing: undefined,
+        entities: [{
+          entityType: 'annotation',
+          id: action.annotation.id
+        }]
+      }
+    case 'CREATE_DRAWING_ANNOTATION':
+      return {
+        editing: undefined,
+        entities: [{
+          entityType: 'annotation',
+          id: action.annotation.id
+        }]
+      }
     default:
       return state
   }

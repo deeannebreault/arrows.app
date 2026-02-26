@@ -1,11 +1,86 @@
 import {relationshipHitTolerance, ringMargin} from "./constants";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
+import {drawTextAnnotation, drawDrawingAnnotation, drawAnnotationSelection} from "./annotationRenderer";
+import {Point} from "../model/Point";
 
 export default class VisualGraph {
-  constructor(graph, nodes, relationshipBundles) {
+  constructor(graph, nodes, relationshipBundles, measureTextContext) {
     this.graph = graph
     this.nodes = nodes
     this.relationshipBundles = relationshipBundles
+    this.measureTextContext = measureTextContext
+    this.annotations = graph.annotations || []
+  }
+
+  annotationAtPoint(point) {
+    // Check in reverse order (top-most first)
+    for (let i = this.annotations.length - 1; i >= 0; i--) {
+      const annotation = this.annotations[i]
+      if (this.hitTestAnnotation(annotation, point)) {
+        return annotation
+      }
+    }
+    return null
+  }
+
+  hitTestAnnotation(annotation, point) {
+    if (annotation.type === 'TEXT') {
+      // Simple bounding box hit test for text
+      const fontSize = annotation.style.fontSize
+      const lines = annotation.text.split('\n')
+      const lineHeight = fontSize * 1.2
+      
+      // Use a temporary canvas to measure text
+      if (this.measureTextContext) {
+        this.measureTextContext.font = `${fontSize}px ${annotation.style.fontFamily}`
+        const maxWidth = Math.max(...lines.map(line => this.measureTextContext.measureText(line).width))
+        const totalHeight = lines.length * lineHeight
+        
+        const minX = annotation.position.x
+        const minY = annotation.position.y
+        const maxX = minX + maxWidth
+        const maxY = minY + totalHeight
+        
+        return point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY
+      }
+      
+      // Fallback: approximate hit test
+      const approxWidth = annotation.text.length * fontSize * 0.6
+      const approxHeight = lines.length * lineHeight
+      return point.x >= annotation.position.x && 
+             point.x <= annotation.position.x + approxWidth &&
+             point.y >= annotation.position.y && 
+             point.y <= annotation.position.y + approxHeight
+    } else if (annotation.type === 'DRAWING') {
+      // Hit test drawing - check if point is near any line segment
+      const tolerance = 10
+      for (let i = 1; i < annotation.points.length; i++) {
+        const p1 = annotation.points[i - 1]
+        const p2 = annotation.points[i]
+        const distance = this.distanceToLineSegment(point, p1, p2)
+        if (distance <= tolerance) {
+          return true
+        }
+      }
+      return false
+    }
+    return false
+  }
+
+  distanceToLineSegment(point, lineStart, lineEnd) {
+    const dx = lineEnd.x - lineStart.x
+    const dy = lineEnd.y - lineStart.y
+    const length = Math.sqrt(dx * dx + dy * dy)
+    
+    if (length === 0) {
+      return Math.sqrt((point.x - lineStart.x) ** 2 + (point.y - lineStart.y) ** 2)
+    }
+    
+    const t = Math.max(0, Math.min(1, ((point.x - lineStart.x) * dx + (point.y - lineStart.y) * dy) / (length * length)))
+    const projectionX = lineStart.x + t * dx
+    const projectionY = lineStart.y + t * dy
+    
+    return Math.sqrt((point.x - projectionX) ** 2 + (point.y - projectionY) ** 2)
   }
 
   get style () {
@@ -13,6 +88,9 @@ export default class VisualGraph {
   }
 
   entityAtPoint(point) {
+    const annotation = this.annotationAtPoint(point)
+    if (annotation) return { ...annotation, entityType: 'annotation' }
+
     const node = this.nodeAtPoint(point)
     if (node) return { ...node, entityType: 'node' }
 
@@ -91,6 +169,14 @@ export default class VisualGraph {
     this.relationshipBundles.forEach(bundle => bundle.draw(ctx))
     Object.values(this.nodes).forEach(visualNode => {
       visualNode.draw(ctx)
+    })
+    // Draw annotations
+    this.annotations.forEach(annotation => {
+      if (annotation.type === 'TEXT') {
+        drawTextAnnotation(ctx, annotation, viewTransformation)
+      } else if (annotation.type === 'DRAWING') {
+        drawDrawingAnnotation(ctx, annotation, viewTransformation)
+      }
     })
     ctx.restore()
   }
