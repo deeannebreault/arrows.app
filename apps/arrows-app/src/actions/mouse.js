@@ -1,6 +1,7 @@
 import {getPositionsOfSelectedNodes, getPresentGraph, getTransformationHandles, getVisualGraph} from "../selectors/"
 import {activateEditing, clearSelection, toggleSelection} from "./selection"
 import {connectNodes, createNodesAndRelationships, moveNodesEndDrag, tryMoveHandle, tryMoveNode} from "./graph"
+import {createTextAnnotation, createDrawingAnnotation, addDrawingPoint, moveAnnotation} from "./annotations"
 import {adjustViewport} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
@@ -99,6 +100,7 @@ export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
     const visualGraph = getVisualGraph(state)
     const transformationHandles = getTransformationHandles(state)
     const graphPosition = toGraphPosition(state, canvasPosition)
+    const drawingMode = state.applicationLayout.drawingMode
 
     const handle = transformationHandles.handleAtPoint(canvasPosition)
     if (handle) {
@@ -107,6 +109,11 @@ export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
       const item = visualGraph.entityAtPoint(graphPosition)
       if (item) {
         switch (item.entityType) {
+          case 'annotation':
+            dispatch(toggleSelection([item], multiSelectModifierKey ? 'xor' : 'at-least'))
+            dispatch(mouseDownOnAnnotation(item, canvasPosition, graphPosition))
+            break
+
           case 'node':
             dispatch(toggleSelection([item], multiSelectModifierKey ? 'xor' : 'at-least'))
             dispatch(mouseDownOnNode(item, canvasPosition, graphPosition))
@@ -124,7 +131,12 @@ export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
         if (!multiSelectModifierKey) {
           dispatch(clearSelection())
         }
-        dispatch(mouseDownOnCanvas(canvasPosition, graphPosition))
+        // Check if we're in drawing mode
+        if (drawingMode) {
+          dispatch(startDrawing(graphPosition))
+        } else {
+          dispatch(mouseDownOnCanvas(canvasPosition, graphPosition))
+        }
       }
     }
   }
@@ -160,6 +172,28 @@ const mouseDownOnCanvas = (canvasPosition, graphPosition) => ({
   canvasPosition,
   graphPosition
 })
+
+const mouseDownOnAnnotation = (annotation, canvasPosition, graphPosition) => ({
+  type: 'MOUSE_DOWN_ON_ANNOTATION',
+  annotation,
+  canvasPosition,
+  graphPosition
+})
+
+const startDrawing = (graphPosition) => (dispatch, getState) => {
+  dispatch(createDrawingAnnotation())
+  const state = getState()
+  const graph = getPresentGraph(state)
+  const annotations = graph.annotations || []
+  const lastAnnotation = annotations[annotations.length - 1]
+  if (lastAnnotation && lastAnnotation.type === 'DRAWING') {
+    dispatch(addDrawingPoint(lastAnnotation.id, graphPosition))
+  }
+  return {
+    type: 'START_DRAWING',
+    graphPosition
+  }
+}
 
 const furtherThanDragThreshold = (previousPosition, newPosition) => {
   const movementDelta = newPosition.vectorFrom(previousPosition)
@@ -220,6 +254,27 @@ export const mouseMove = (canvasPosition) => {
           }
           break
 
+        case 'ANNOTATION':
+          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+            const deltaX = (canvasPosition.x - previousPosition.x) / state.viewTransformation.scale
+            const deltaY = (canvasPosition.y - previousPosition.y) / state.viewTransformation.scale
+            const newPosition = {
+              x: mouse.annotation.position.x + deltaX,
+              y: mouse.annotation.position.y + deltaY
+            }
+            dispatch(moveAnnotation(mouse.annotation.id, newPosition))
+          }
+          break
+
+        case 'DRAWING':
+          const graph = getPresentGraph(state)
+          const annotations = graph.annotations || []
+          const lastAnnotation = annotations[annotations.length - 1]
+          if (lastAnnotation && lastAnnotation.type === 'DRAWING') {
+            dispatch(addDrawingPoint(lastAnnotation.id, graphPosition))
+          }
+          break
+
         case 'NODE_RING':
           dispatch(tryDragRing(mouse.node.id, graphPosition))
           break
@@ -255,6 +310,12 @@ export const mouseUp = () => {
           break
         case 'NODE':
           dispatch(moveNodesEndDrag(getPositionsOfSelectedNodes(state)))
+          break
+        case 'ANNOTATION':
+          // Annotation move complete
+          break
+        case 'DRAWING':
+          // Drawing complete
           break
         case 'NODE_RING':
           const dragToCreate = state.gestures.dragToCreate;
