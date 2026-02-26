@@ -33,3 +33,7 @@ export const setPersistClusters = enabled => ({
   type: 'SET_PERSIST_CLUSTERS',
   enabled
 })
+
+export const toggleDrawingMode = () => ({
+  type: 'TOGGLE_DRAWING_MODE'
+})

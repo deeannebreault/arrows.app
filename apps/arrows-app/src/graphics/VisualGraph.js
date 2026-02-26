@@ -1,11 +1,14 @@
 import {relationshipHitTolerance, ringMargin} from "./constants";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
+import {drawTextAnnotation, drawDrawingAnnotation, drawAnnotationSelection} from "./annotationRenderer";
 
 export default class VisualGraph {
-  constructor(graph, nodes, relationshipBundles) {
+  constructor(graph, nodes, relationshipBundles, measureTextContext) {
     this.graph = graph
     this.nodes = nodes
     this.relationshipBundles = relationshipBundles
+    this.measureTextContext = measureTextContext
+    this.annotations = graph.annotations || []
   }
 
   get style () {
@@ -91,6 +94,14 @@ export default class VisualGraph {
     this.relationshipBundles.forEach(bundle => bundle.draw(ctx))
     Object.values(this.nodes).forEach(visualNode => {
       visualNode.draw(ctx)
+    })
+    // Draw annotations
+    this.annotations.forEach(annotation => {
+      if (annotation.type === 'TEXT') {
+        drawTextAnnotation(ctx, annotation, viewTransformation)
+      } else if (annotation.type === 'DRAWING') {
+        drawDrawingAnnotation(ctx, annotation, viewTransformation)
+      }
     })
     ctx.restore()
   }

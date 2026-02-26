@@ -26,7 +26,12 @@ export default class GeneralInspector extends Component {
                 null
               )}
             </Form.Field>
-            <GeneralToolbox onPlusNodeClick={this.props.onPlusNodeClick}/>
+            <GeneralToolbox 
+              onPlusNodeClick={this.props.onPlusNodeClick}
+              onAddTextClick={this.props.onAddTextClick}
+              onToggleDrawingMode={this.props.onToggleDrawingMode}
+              drawingMode={this.props.drawingMode}
+            />
             <Divider
               key='StyleDivider'
               horizontal
