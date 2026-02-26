@@ -1,5 +1,5 @@
-import {Point} from "./Point"
-import {nextAvailableId} from "./Id"
+import { Point } from './Point';
+import { nextAvailableId } from './Id';
 
 export const createTextAnnotation = (id, position, text = '', style = {}) => ({
   id,
@@ -7,13 +7,13 @@ export const createTextAnnotation = (id, position, text = '', style = {}) => ({
   position,
   text,
   style: {
-    fontSize: style.fontSize || 14,
+    fontSize: style.fontSize || 16,
     fontFamily: style.fontFamily || 'sans-serif',
     color: style.color || '#000000',
-    backgroundColor: style.backgroundColor || 'transparent',
-    ...style
-  }
-})
+    backgroundColor: style.backgroundColor || 'rgba(255, 255, 200, 0.8)',
+    ...style,
+  },
+});
 
 export const createDrawingAnnotation = (id, points = [], style = {}) => ({
   id,
@@ -22,30 +22,30 @@ export const createDrawingAnnotation = (id, points = [], style = {}) => ({
   style: {
     strokeColor: style.strokeColor || '#000000',
     strokeWidth: style.strokeWidth || 2,
-    ...style
-  }
-})
+    ...style,
+  },
+});
 
 export const setAnnotationText = (annotation, text) => ({
   ...annotation,
-  text
-})
+  text,
+});
 
 export const setAnnotationPosition = (annotation, position) => ({
   ...annotation,
-  position
-})
+  position,
+});
 
 export const addDrawingPoint = (annotation, point) => ({
   ...annotation,
-  points: [...annotation.points, point]
-})
+  points: [...annotation.points, point],
+});
 
 export const setAnnotationStyle = (annotation, style) => ({
   ...annotation,
-  style: {...annotation.style, ...style}
-})
+  style: { ...annotation.style, ...style },
+});
 
 export const emptyAnnotationState = () => ({
-  annotations: []
-})
+  annotations: [],
+});

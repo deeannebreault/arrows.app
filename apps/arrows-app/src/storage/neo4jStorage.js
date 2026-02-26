@@ -1,55 +1,59 @@
-import { readGraph } from "./cypherReadQueries";
-import { writeQueriesForAction } from "./cypherWriteQueries";
-import { getPresentGraph } from "../selectors"
-import {gettingGraph} from "../actions/storage";
+import { readGraph } from './cypherReadQueries';
+import { writeQueriesForAction } from './cypherWriteQueries';
+import { getPresentGraph } from '../selectors';
+import { gettingGraph } from '../actions/storage';
 
-const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
+import neo4j from 'neo4j-driver';
 
-let driver = null
+let driver = null;
 
 export const updateDriver = (newDriver) => {
   if (driver) {
-    driver.close()
+    driver.close();
   }
-  driver = newDriver
-}
+  driver = newDriver;
+};
 
 export function fetchGraphFromDatabase() {
   return function (dispatch) {
     if (driver) {
-      dispatch(gettingGraph())
+      dispatch(gettingGraph());
 
-      let session = driver.session(neo4j.READ)
+      let session = driver.session(neo4j.READ);
 
-      readGraph(session, dispatch)
+      readGraph(session, dispatch);
     }
-  }
+  };
 }
 
 export const updateStore = (action, state) => {
-  const graph = getPresentGraph(state)
-  const workList = [writeQueriesForAction(action, graph)]
+  const graph = getPresentGraph(state);
+  const workList = [writeQueriesForAction(action, graph)];
 
-  const layers = state.applicationLayout.layers
+  const layers = state.applicationLayout.layers;
 
   if (layers && layers.length > 0) {
-    layers.forEach(layer => {
-      if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['neo4j']) {
-        workList.push(layer.storageActionHandler['neo4j'](action))
+    layers.forEach((layer) => {
+      if (
+        layer.persist &&
+        layer.storageActionHandler &&
+        layer.storageActionHandler['neo4j']
+      ) {
+        workList.push(layer.storageActionHandler['neo4j'](action));
       }
-    })
+    });
   }
 
   if (driver) {
-    const session = driver.session()
+    const session = driver.session();
 
-    return Promise.all(workList.map(work => work(session)))
+    return Promise.all(workList.map((work) => work(session)))
       .then(() => {
-        session.close()
+        session.close();
       })
       .catch((error) => {
-        session.close()
-        console.log(error)
-      })
+        session.close();
+        console.log(error);
+      });
   }
-}
+};

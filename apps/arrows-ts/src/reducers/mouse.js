@@ -6,33 +6,35 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
         corner: action.corner,
         mousePosition: action.canvasPosition,
         initialMousePosition: action.canvasPosition,
-        initialNodePositions: action.nodePositions
-      }
+        initialNodePositions: action.nodePositions,
+      };
     }
 
     case 'LOCK_HANDLE_DRAG_MODE': {
       return {
         ...state,
-        dragType: action.dragType
-      }
+        dragType: action.dragType,
+      };
     }
 
     case 'MOUSE_DOWN_ON_NODE': {
-      const mouseToNodeVector = action.node.position.vectorFrom(action.graphPosition)
+      const mouseToNodeVector = action.node.position.vectorFrom(
+        action.graphPosition
+      );
       return {
         dragType: 'NODE',
         node: action.node,
         mousePosition: action.position,
-        mouseToNodeVector
-      }
+        mouseToNodeVector,
+      };
     }
 
     case 'MOUSE_DOWN_ON_NODE_RING': {
       return {
         dragType: 'NODE_RING',
         node: action.node,
-        mousePosition: action.position
-      }
+        mousePosition: action.position,
+      };
     }
 
     case 'MOUSE_DOWN_ON_CANVAS': {
@@ -40,8 +42,8 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
         dragType: 'CANVAS',
         dragged: false,
         mousePosition: action.canvasPosition,
-        mouseDownPosition: action.graphPosition
-      }
+        mouseDownPosition: action.graphPosition,
+      };
     }
 
     case 'MOUSE_DOWN_ON_ANNOTATION': {
@@ -50,49 +52,49 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
         dragged: false,
         annotation: action.annotation,
         mousePosition: action.canvasPosition,
-        initialMousePosition: action.canvasPosition
-      }
+        initialMousePosition: action.canvasPosition,
+      };
     }
 
     case 'START_DRAWING': {
       return {
         dragType: 'DRAWING',
         dragged: true,
-        mousePosition: action.graphPosition
-      }
+        mousePosition: action.graphPosition,
+      };
     }
 
     case 'MOVE_NODES':
-      const currentPosition = action.newMousePosition || state.mousePosition
+      const currentPosition = action.newMousePosition || state.mousePosition;
       return {
         ...state,
         dragged: true,
-        mousePosition: currentPosition
-      }
+        mousePosition: currentPosition,
+      };
 
     case 'RING_DRAGGED':
       return {
         ...state,
         dragged: true,
-        mousePosition: action.newMousePosition
-      }
+        mousePosition: action.newMousePosition,
+      };
 
     case 'SET_MARQUEE':
       return {
         ...state,
         dragType: 'MARQUEE',
         dragged: true,
-        mousePosition: action.newMousePosition
-      }
+        mousePosition: action.newMousePosition,
+      };
 
     case 'END_DRAG':
       return {
-        dragType: 'NONE'
-      }
+        dragType: 'NONE',
+      };
 
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default mouse
+export default mouse;

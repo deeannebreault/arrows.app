@@ -2,38 +2,42 @@ export const windowResized = (width, height) => {
   return {
     type: 'WINDOW_RESIZED',
     width,
-    height
-  }
-}
+    height,
+  };
+};
 
 export const toggleInspector = () => {
   return {
-    type: 'TOGGLE_INSPECTOR'
-  }
-}
+    type: 'TOGGLE_INSPECTOR',
+  };
+};
 
 export const styleTheme = () => {
   return {
-    type: 'STYLE_THEME'
-  }
-}
+    type: 'STYLE_THEME',
+  };
+};
 
 export const styleCustomize = () => {
   return {
-    type: 'STYLE_CUSTOMIZE'
-  }
-}
+    type: 'STYLE_CUSTOMIZE',
+  };
+};
 
-export const setBetaFeaturesEnabled = enabled => ({
+export const setBetaFeaturesEnabled = (enabled) => ({
   type: 'SET_BETA_FEATURES_ENABLED',
-  enabled
-})
+  enabled,
+});
 
-export const setPersistClusters = enabled => ({
+export const setPersistClusters = (enabled) => ({
   type: 'SET_PERSIST_CLUSTERS',
-  enabled
-})
+  enabled,
+});
 
 export const toggleDrawingMode = () => ({
-  type: 'TOGGLE_DRAWING_MODE'
-})
+  type: 'TOGGLE_DRAWING_MODE',
+});
+
+export const toggleTextMode = () => ({
+  type: 'TOGGLE_TEXT_MODE',
+});
