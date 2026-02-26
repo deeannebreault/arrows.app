@@ -2,6 +2,8 @@
 
 ![Arrow.app logo](https://arrows.neo4jlabs.com/arrows_logo.svg)
 
+ arrowsplus text, draw, share,interact through api, cli?
+
 **🚨 NOTE:** The domain https://arrows.app was unavialable, we've restored access (esp. for locally stored graphs). Sorry for the issues (Expiry/Google/Squarespace). We're planning to permanently move the app to https://arrows.neo4jlabs.com/ 
 
 Web-based tool for drawing pictures of graphs, for use in documents or presentations.
