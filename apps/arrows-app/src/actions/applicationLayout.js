@@ -38,6 +38,35 @@ export const toggleDrawingMode = () => ({
   type: 'TOGGLE_DRAWING_MODE',
 });
 
+export const setDrawToolMode = (mode) => ({
+  type: 'SET_DRAW_TOOL_MODE',
+  mode,
+});
+
+export const setDrawSnapMode = (enabled) => ({
+  type: 'SET_DRAW_SNAP_MODE',
+  enabled,
+});
+
+export const setDrawStrokeColor = (color) => ({
+  type: 'SET_DRAW_STROKE_COLOR',
+  color,
+});
+
+export const setDrawStrokeWidth = (strokeWidth) => ({
+  type: 'SET_DRAW_STROKE_WIDTH',
+  strokeWidth,
+});
+
+export const setDrawLineStartPoint = (point) => ({
+  type: 'SET_DRAW_LINE_START_POINT',
+  point,
+});
+
+export const clearDrawLineStartPoint = () => ({
+  type: 'CLEAR_DRAW_LINE_START_POINT',
+});
+
 export const toggleTextMode = () => ({
   type: 'TOGGLE_TEXT_MODE',
 });

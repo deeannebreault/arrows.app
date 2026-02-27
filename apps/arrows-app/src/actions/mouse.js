@@ -16,9 +16,15 @@ import {
   createTextAnnotation,
   createDrawingAnnotation,
   addDrawingPoint,
+  deleteAnnotation,
   moveAnnotation,
+  translateDrawingAnnotation,
 } from './annotations';
 import { adjustViewport } from './viewTransformation';
+import {
+  clearDrawLineStartPoint,
+  setDrawLineStartPoint,
+} from './applicationLayout';
 import { activateRing, deactivateRing, tryDragRing } from './dragToCreate';
 import { selectItemsInMarquee, setMarquee } from './selectionMarquee';
 import { getEventHandlers } from '../selectors/layers';
@@ -27,6 +33,7 @@ import {
   computeCanvasSize,
   subtractPadding,
 } from '../model/applicationLayout';
+import { Point } from '../model/Point';
 import { Vector } from '../model/Vector';
 
 const toGraphPosition = (state, canvasPosition) =>
@@ -140,14 +147,69 @@ export const doubleClick = (canvasPosition) => {
   };
 };
 
+const snapLinePoint = (startPoint, endPoint, snapModeEnabled) => {
+  if (!snapModeEnabled) {
+    return endPoint;
+  }
+
+  const dx = Math.abs(endPoint.x - startPoint.x);
+  const dy = Math.abs(endPoint.y - startPoint.y);
+
+  if (dx >= dy) {
+    return new Point(endPoint.x, startPoint.y);
+  }
+
+  return new Point(startPoint.x, endPoint.y);
+};
+
 export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
   return function (dispatch, getState) {
     const state = getState();
     const visualGraph = getVisualGraph(state);
     const transformationHandles = getTransformationHandles(state);
     const graphPosition = toGraphPosition(state, canvasPosition);
-    const drawingMode = state.applicationLayout.drawingMode;
-    const textMode = state.applicationLayout.textMode;
+    const {
+      drawingMode,
+      textMode,
+      drawToolMode,
+      drawSnapMode,
+      drawStrokeColor,
+      drawStrokeWidth,
+      drawLineStartPoint,
+    } = state.applicationLayout;
+    const drawingStyle = {
+      strokeColor: drawStrokeColor,
+      strokeWidth: drawStrokeWidth,
+    };
+
+    if (drawingMode && drawToolMode === 'LINE') {
+      if (!multiSelectModifierKey) {
+        dispatch(clearSelection());
+      }
+
+      if (drawLineStartPoint) {
+        const snappedEndPoint = snapLinePoint(
+          drawLineStartPoint,
+          graphPosition,
+          drawSnapMode
+        );
+        const annotation = dispatch(createDrawingAnnotation(drawingStyle));
+        if (annotation) {
+          dispatch(addDrawingPoint(annotation.id, drawLineStartPoint));
+          dispatch(addDrawingPoint(annotation.id, snappedEndPoint));
+          dispatch(
+            toggleSelection(
+              [{ id: annotation.id, entityType: 'annotation' }],
+              'replace'
+            )
+          );
+        }
+        dispatch(clearDrawLineStartPoint());
+      } else {
+        dispatch(setDrawLineStartPoint(graphPosition));
+      }
+      return;
+    }
 
     const handle = transformationHandles.handleAtPoint(canvasPosition);
     if (handle) {
@@ -203,7 +265,7 @@ export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
         }
         // Check if we're in drawing mode
         if (drawingMode) {
-          dispatch(startDrawing(graphPosition));
+          dispatch(startDrawing(graphPosition, drawingStyle));
         } else if (textMode) {
           const annotation = dispatch(
             createTextAnnotation(graphPosition, 'New text')
@@ -263,8 +325,8 @@ const mouseDownOnAnnotation = (annotation, canvasPosition, graphPosition) => ({
   graphPosition,
 });
 
-const startDrawing = (graphPosition) => (dispatch, getState) => {
-  dispatch(createDrawingAnnotation());
+const startDrawing = (graphPosition, style) => (dispatch, getState) => {
+  dispatch(createDrawingAnnotation(style));
   const state = getState();
   const graph = getPresentGraph(state);
   const annotations = graph.annotations || [];
@@ -272,15 +334,43 @@ const startDrawing = (graphPosition) => (dispatch, getState) => {
   if (lastAnnotation && lastAnnotation.type === 'DRAWING') {
     dispatch(addDrawingPoint(lastAnnotation.id, graphPosition));
   }
-  return {
+  dispatch({
     type: 'START_DRAWING',
     graphPosition,
-  };
+  });
 };
 
 const furtherThanDragThreshold = (previousPosition, newPosition) => {
   const movementDelta = newPosition.vectorFrom(previousPosition);
   return movementDelta.distance() >= 3;
+};
+
+const shouldAddDrawingPoint = (drawingAnnotation, nextPoint) => {
+  const points = drawingAnnotation?.points || [];
+  if (points.length === 0) {
+    return true;
+  }
+
+  const lastPoint = points[points.length - 1];
+  const dx = nextPoint.x - lastPoint.x;
+  const dy = nextPoint.y - lastPoint.y;
+  const minDistance = 0.75;
+  return Math.sqrt(dx * dx + dy * dy) >= minDistance;
+};
+
+const drawingPathLength = (drawingAnnotation) => {
+  const points = drawingAnnotation?.points || [];
+  if (points.length < 2) {
+    return 0;
+  }
+
+  let total = 0;
+  for (let i = 1; i < points.length; i++) {
+    const dx = points[i].x - points[i - 1].x;
+    const dy = points[i].y - points[i - 1].y;
+    total += Math.sqrt(dx * dx + dy * dy);
+  }
+  return total;
 };
 
 export const mouseMove = (canvasPosition) => {
@@ -365,11 +455,20 @@ export const mouseMove = (canvasPosition) => {
             const deltaY =
               (canvasPosition.y - previousPosition.y) /
               state.viewTransformation.scale;
-            const newPosition = {
-              x: mouse.annotation.position.x + deltaX,
-              y: mouse.annotation.position.y + deltaY,
-            };
-            dispatch(moveAnnotation(mouse.annotation.id, newPosition));
+            if (mouse.annotation.type === 'DRAWING') {
+              dispatch(
+                translateDrawingAnnotation(mouse.annotation.id, {
+                  x: deltaX,
+                  y: deltaY,
+                })
+              );
+            } else {
+              const newPosition = {
+                x: mouse.annotation.position.x + deltaX,
+                y: mouse.annotation.position.y + deltaY,
+              };
+              dispatch(moveAnnotation(mouse.annotation.id, newPosition));
+            }
           }
           break;
 
@@ -377,7 +476,11 @@ export const mouseMove = (canvasPosition) => {
           const graph = getPresentGraph(state);
           const annotations = graph.annotations || [];
           const lastAnnotation = annotations[annotations.length - 1];
-          if (lastAnnotation && lastAnnotation.type === 'DRAWING') {
+          if (
+            lastAnnotation &&
+            lastAnnotation.type === 'DRAWING' &&
+            shouldAddDrawingPoint(lastAnnotation, graphPosition)
+          ) {
             dispatch(addDrawingPoint(lastAnnotation.id, graphPosition));
           }
           break;
@@ -426,7 +529,16 @@ export const mouseUp = () => {
           // Annotation move complete
           break;
         case 'DRAWING':
-          // Drawing complete
+          const drawingAnnotations = graph.annotations || [];
+          const currentDrawing = drawingAnnotations[drawingAnnotations.length - 1];
+          if (currentDrawing && currentDrawing.type === 'DRAWING') {
+            const tinyDrawing =
+              currentDrawing.points.length < 2 ||
+              drawingPathLength(currentDrawing) < 2;
+            if (tinyDrawing) {
+              dispatch(deleteAnnotation(currentDrawing.id));
+            }
+          }
           break;
         case 'NODE_RING':
           const dragToCreate = state.gestures.dragToCreate;

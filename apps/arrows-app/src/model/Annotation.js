@@ -41,6 +41,14 @@ export const addDrawingPoint = (annotation, point) => ({
   points: [...annotation.points, point],
 });
 
+export const translateDrawingAnnotation = (annotation, delta) => ({
+  ...annotation,
+  points: (annotation.points || []).map((point) => ({
+    x: point.x + delta.x,
+    y: point.y + delta.y,
+  })),
+});
+
 export const setAnnotationStyle = (annotation, style) => ({
   ...annotation,
   style: { ...annotation.style, ...style },

@@ -7,6 +7,11 @@ const applicationLayout = (
     styleMode: 'theme',
     drawingMode: false,
     textMode: false,
+    drawToolMode: 'LINE',
+    drawSnapMode: true,
+    drawStrokeColor: '#000000',
+    drawStrokeWidth: 2,
+    drawLineStartPoint: null,
     betaFeaturesEnabled: false,
     layers: [],
   },
@@ -66,12 +71,45 @@ const applicationLayout = (
         ...state,
         drawingMode: !state.drawingMode,
         textMode: false,
+        drawLineStartPoint: null,
+      };
+    case 'SET_DRAW_TOOL_MODE':
+      return {
+        ...state,
+        drawToolMode: action.mode,
+        drawLineStartPoint: null,
+      };
+    case 'SET_DRAW_SNAP_MODE':
+      return {
+        ...state,
+        drawSnapMode: action.enabled,
+      };
+    case 'SET_DRAW_STROKE_COLOR':
+      return {
+        ...state,
+        drawStrokeColor: action.color,
+      };
+    case 'SET_DRAW_STROKE_WIDTH':
+      return {
+        ...state,
+        drawStrokeWidth: action.strokeWidth,
+      };
+    case 'SET_DRAW_LINE_START_POINT':
+      return {
+        ...state,
+        drawLineStartPoint: action.point,
+      };
+    case 'CLEAR_DRAW_LINE_START_POINT':
+      return {
+        ...state,
+        drawLineStartPoint: null,
       };
     case 'TOGGLE_TEXT_MODE':
       return {
         ...state,
         textMode: !state.textMode,
         drawingMode: false,
+        drawLineStartPoint: null,
       };
     default:
       return state;

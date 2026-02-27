@@ -26,6 +26,7 @@ import {
   setAnnotationPosition,
   setAnnotationStyle as modelSetAnnotationStyle,
   addDrawingPoint as modelAddDrawingPoint,
+  translateDrawingAnnotation as modelTranslateDrawingAnnotation,
 } from '../model/Annotation';
 
 const graph = (state = emptyGraph(), action) => {
@@ -524,6 +525,16 @@ const graph = (state = emptyGraph(), action) => {
         ),
       };
 
+    case 'TRANSLATE_DRAWING_ANNOTATION':
+      return {
+        ...state,
+        annotations: (state.annotations || []).map((annotation) =>
+          annotation.id === action.annotationId && annotation.type === 'DRAWING'
+            ? modelTranslateDrawingAnnotation(annotation, action.delta)
+            : annotation
+        ),
+      };
+
     case 'SET_ANNOTATION_STYLE':
       return {
         ...state,
@@ -553,5 +564,6 @@ export default undoable(graph, {
     'MOVE_NODES',
     'ADD_DRAWING_POINT',
     'MOVE_ANNOTATION',
+    'TRANSLATE_DRAWING_ANNOTATION',
   ]),
 });

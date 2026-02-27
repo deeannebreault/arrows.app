@@ -24,16 +24,22 @@ export const createTextAnnotation =
     return annotation;
   };
 
-export const createDrawingAnnotation = () => (dispatch, getState) => {
+export const createDrawingAnnotation = (style = {}) => (dispatch, getState) => {
   const state = getState();
   const graph = state.graph.present || state.graph;
   const annotations = graph.annotations || [];
+  const annotation = createDrawingAnnotationModel(
+    nextAvailableId(annotations),
+    [],
+    style
+  );
 
   dispatch({
     category: 'GRAPH',
     type: 'CREATE_DRAWING_ANNOTATION',
-    annotation: createDrawingAnnotationModel(nextAvailableId(annotations), []),
+    annotation,
   });
+  return annotation;
 };
 
 export const addDrawingPoint = (annotationId, point) => ({
@@ -55,6 +61,13 @@ export const moveAnnotation = (annotationId, position) => ({
   type: 'MOVE_ANNOTATION',
   annotationId,
   position,
+});
+
+export const translateDrawingAnnotation = (annotationId, delta) => ({
+  category: 'GRAPH',
+  type: 'TRANSLATE_DRAWING_ANNOTATION',
+  annotationId,
+  delta,
 });
 
 export const setAnnotationStyle = (annotationId, style) => ({

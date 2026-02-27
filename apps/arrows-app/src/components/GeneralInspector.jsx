@@ -50,6 +50,14 @@ export default class GeneralInspector extends Component {
               onToggleDrawingMode={this.props.onToggleDrawingMode}
               drawingMode={this.props.drawingMode}
               textMode={this.props.textMode}
+              drawToolMode={this.props.drawToolMode}
+              onSetDrawToolMode={this.props.onSetDrawToolMode}
+              drawSnapMode={this.props.drawSnapMode}
+              onSetDrawSnapMode={this.props.onSetDrawSnapMode}
+              drawStrokeColor={this.props.drawStrokeColor}
+              onSetDrawStrokeColor={this.props.onSetDrawStrokeColor}
+              drawStrokeWidth={this.props.drawStrokeWidth}
+              onSetDrawStrokeWidth={this.props.onSetDrawStrokeWidth}
             />
             <Divider
               key="StyleDivider"
