@@ -1,7 +1,7 @@
-# 🧪 Experiment: Add visual bounding box display for text elements
+# 🧪 Experiment: Add touch gesture support for foldable screens
 
-**Branch:** exp/add-visual-bounding-box-display-for-text-elements-1772276401  
-**Started:** 2026-02-28 04:00  
+**Branch:** exp/add-touch-gesture-support-for-foldable-screens-1772280001  
+**Started:** 2026-02-28 05:00  
 **Status:** 🚧 In Progress  
 **Reason:** Priority: Based on your recent work
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Add visual bounding box display for text elements
+Add touch gesture support for foldable screens
 
 ## Why This Helps
 - Core UX improvement for graph editing
