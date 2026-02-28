@@ -1,7 +1,7 @@
-# 🧪 Experiment: Implement node pinning/fixed positions
+# 🧪 Experiment: Implement copy/paste for nodes
 
-**Branch:** exp/implement-node-pinning-fixed-positions-1772287202  
-**Started:** 2026-02-28 07:00  
+**Branch:** exp/implement-copy-paste-for-nodes-1772290802  
+**Started:** 2026-02-28 08:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Implement node pinning/fixed positions
+Implement copy/paste for nodes
 
 ## Why This Helps
 - Core UX improvement for graph editing
