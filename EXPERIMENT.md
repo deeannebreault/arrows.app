@@ -1,7 +1,7 @@
-# 🧪 Experiment: Add relationship type icons and styling
+# 🧪 Experiment: Create auto-layout algorithms
 
-**Branch:** exp/add-relationship-type-icons-and-styling-1772308802  
-**Started:** 2026-02-28 13:00  
+**Branch:** exp/create-auto-layout-algorithms-1772312401  
+**Started:** 2026-02-28 14:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Add relationship type icons and styling
+Create auto-layout algorithms
 
 ## Why This Helps
 - Core UX improvement for graph editing
