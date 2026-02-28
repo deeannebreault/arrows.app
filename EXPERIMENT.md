@@ -1,7 +1,7 @@
-# 🧪 Experiment: Add relationship direction indicators
+# 🧪 Experiment: Implement undo/redo stack with visual history
 
-**Branch:** exp/add-relationship-direction-indicators-1772269201  
-**Started:** 2026-02-28 02:00  
+**Branch:** exp/implement-undo-redo-stack-with-visual-history-1772272801  
+**Started:** 2026-02-28 03:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Add relationship direction indicators
+Implement undo/redo stack with visual history
 
 ## Why This Helps
 - Core UX improvement for graph editing
