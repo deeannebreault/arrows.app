@@ -2,11 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main, master ]
-    # Also allow manual trigger
+    branches: [ main ]
   workflow_dispatch:
-  # Deploy on experiment branches too
-    
+
 permissions:
   contents: read
   pages: write
@@ -26,16 +24,32 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '18'
           cache: 'npm'
           
       - name: Install dependencies
         run: npm ci
         
       - name: Build
-        run: npm run build
+        run: npx nx build arrows-app --configuration=production
         env:
           CI: false
+          
+      - name: Prepare Pages
+        run: |
+          mkdir -p public
+          
+          # Copy build output
+          if [ -d "dist/apps/arrows-app" ]; then
+            echo "Found dist/apps/arrows-app"
+            cp -r dist/apps/arrows-app/* public/
+          elif [ -d "apps/arrows-app/dist" ]; then
+            echo "Found apps/arrows-app/dist"  
+            cp -r apps/arrows-app/dist/* public/
+          fi
+          
+          ls -la public/
+          test -f public/index.html
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -43,7 +57,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: './public'
 
   deploy:
     environment:
