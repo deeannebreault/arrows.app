@@ -1,23 +1,34 @@
-# Experiment: Implement keyboard navigation
+# 🧪 Experiment: Add multi-select with lasso tool
 
-**Branch:** exp/implement-keyboard-navigation-1772252150  
-**Started:** Sat Feb 28 04:15:50 UTC 2026  
-**Status:** 🚧 In Progress
+**Branch:** exp/add-multi-select-with-lasso-tool-1772253244  
+**Started:** 2026-02-28 04:34  
+**Status:** 🚧 In Progress  
+**Reason:** Core UX improvement
 
-## Idea
-Implement keyboard navigation
+## Context
+This experiment was chosen based on:
+- Dee's current priorities
+- Recent work patterns
+- Mobile usage (Z Fold 7)
+- Integration with Ladybug pipeline
 
-## Implementation Notes
-- 
+## The Idea
+Add multi-select with lasso tool
 
-## Files Modified
-- 
+## Why This Helps
+- Core UX improvement for graph editing
 
-## Commits
-- 
-
-## Result
-TBD
+## Implementation
+Created experiment documentation
 
 ## Next Steps
-- 
+1. Review the generated code
+2. Test in browser
+3. Refine based on usage
+4. Merge if successful
+
+## Success Criteria
+- [ ] Feature works as described
+- [ ] No console errors
+- [ ] Works on mobile (foldable)
+- [ ] Integrates with existing features
