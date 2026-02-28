@@ -1,7 +1,7 @@
-# 🧪 Experiment: Implement node templates for common patterns
+# 🧪 Experiment: Add relationship direction indicators
 
-**Branch:** exp/implement-node-templates-for-common-patterns-1772265601  
-**Started:** 2026-02-28 01:00  
+**Branch:** exp/add-relationship-direction-indicators-1772269201  
+**Started:** 2026-02-28 02:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Implement node templates for common patterns
+Add relationship direction indicators
 
 ## Why This Helps
 - Core UX improvement for graph editing
