@@ -1,7 +1,7 @@
-# 🧪 Experiment: Create auto-layout algorithms
+# 🧪 Experiment: Implement node pinning/fixed positions
 
-**Branch:** exp/create-auto-layout-algorithms-1772312401  
-**Started:** 2026-02-28 14:00  
+**Branch:** exp/implement-node-pinning-fixed-positions-1772316002  
+**Started:** 2026-02-28 15:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Create auto-layout algorithms
+Implement node pinning/fixed positions
 
 ## Why This Helps
 - Core UX improvement for graph editing
