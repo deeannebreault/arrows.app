@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 permissions:
@@ -24,14 +24,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           
       - name: Install dependencies
         run: npm ci
         
-      - name: Build
-        run: npx nx build arrows-app --configuration=production
+      - name: Build with Vite
+        run: |
+          cd apps/arrows-app
+          npx vite build --outDir ../../dist
         env:
           CI: false
           
@@ -39,17 +41,13 @@ jobs:
         run: |
           mkdir -p public
           
-          # Copy build output
-          if [ -d "dist/apps/arrows-app" ]; then
-            echo "Found dist/apps/arrows-app"
-            cp -r dist/apps/arrows-app/* public/
-          elif [ -d "apps/arrows-app/dist" ]; then
-            echo "Found apps/arrows-app/dist"  
-            cp -r apps/arrows-app/dist/* public/
+          if [ -d "dist" ]; then
+            echo "Found dist/"
+            cp -r dist/* public/
           fi
           
           ls -la public/
-          test -f public/index.html
+          test -f public/index.html || (echo "ERROR: index.html not found!" && exit 1)
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
