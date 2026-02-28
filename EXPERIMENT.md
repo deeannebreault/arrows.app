@@ -1,7 +1,7 @@
-# 🧪 Experiment: Add export to PNG/SVG with styling options
+# 🧪 Experiment: Add relationship type icons and styling
 
-**Branch:** exp/add-export-to-png-svg-with-styling-options-1772305201  
-**Started:** 2026-02-28 12:00  
+**Branch:** exp/add-relationship-type-icons-and-styling-1772308802  
+**Started:** 2026-02-28 13:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Add export to PNG/SVG with styling options
+Add relationship type icons and styling
 
 ## Why This Helps
 - Core UX improvement for graph editing
