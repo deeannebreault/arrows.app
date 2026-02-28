@@ -31,7 +31,7 @@ jobs:
         run: npm ci
         
       - name: Build
-        run: npx nx build arrows-app --configuration=production
+        run: npx nx build arrows-ts --configuration=production
         env:
           CI: false
           
@@ -40,12 +40,12 @@ jobs:
           mkdir -p public
           
           # Copy build output
-          if [ -d "dist/apps/arrows-app" ]; then
-            echo "Found dist/apps/arrows-app"
-            cp -r dist/apps/arrows-app/* public/
-          elif [ -d "apps/arrows-app/dist" ]; then
-            echo "Found apps/arrows-app/dist"  
-            cp -r apps/arrows-app/dist/* public/
+          if [ -d "dist/apps/arrows-ts" ]; then
+            echo "Found dist/apps/arrows-ts"
+            cp -r dist/apps/arrows-ts/* public/
+          elif [ -d "apps/arrows-ts/dist" ]; then
+            echo "Found apps/arrows-ts/dist"  
+            cp -r apps/arrows-ts/dist/* public/
           fi
           
           ls -la public/
