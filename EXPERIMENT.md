@@ -1,9 +1,9 @@
-# 🧪 Experiment: Implement undo/redo stack with visual history
+# 🧪 Experiment: Add visual bounding box display for text elements
 
-**Branch:** exp/implement-undo-redo-stack-with-visual-history-1772272801  
-**Started:** 2026-02-28 03:00  
+**Branch:** exp/add-visual-bounding-box-display-for-text-elements-1772276401  
+**Started:** 2026-02-28 04:00  
 **Status:** 🚧 In Progress  
-**Reason:** Core UX improvement
+**Reason:** Priority: Based on your recent work
 
 ## Context
 This experiment was chosen based on:
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Implement undo/redo stack with visual history
+Add visual bounding box display for text elements
 
 ## Why This Helps
 - Core UX improvement for graph editing
