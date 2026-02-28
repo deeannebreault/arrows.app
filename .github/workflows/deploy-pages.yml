@@ -6,9 +6,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+  deployments: write
 
 concurrency:
   group: "pages"
@@ -34,33 +35,15 @@ jobs:
         run: |
           cd apps/arrows-app
           npx vite build --outDir ../../dist
-          echo "Build exit code: $?"
         env:
           CI: false
-          
-      - name: Debug Build Output
-        run: |
-          echo "=== Current directory ==="
-          pwd
-          echo "=== Contents of repo root ==="
-          ls -la
-          echo "=== Contents of dist/ ==="
-          ls -la dist/ 2>/dev/null || echo "No dist/"
-          echo "=== Find index.html ==="
-          find . -name "index.html" -type f 2>/dev/null
           
       - name: Prepare Pages
         run: |
           mkdir -p public
-          if [ -f "dist/index.html" ]; then
-            cp -r dist/* public/
-            # Create 404.html that redirects to index.html (GitHub Pages workaround)
-            cp public/index.html public/404.html
-          else
-            echo "ERROR: dist/index.html not found!"
-            exit 1
-          fi
+          cp -r dist/* public/
           ls -la public/
+          test -f public/index.html || (echo "ERROR: index.html not found!" && exit 1)
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -80,3 +63,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        
+      - name: Verify Deployment
+        run: |
+          echo "Deployment URL: ${{ steps.deployment.outputs.page_url }}"
+          sleep 30
+          curl -I "${{ steps.deployment.outputs.page_url }}" || echo "Site may need more time to propagate"
