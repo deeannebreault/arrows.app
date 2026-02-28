@@ -1,0 +1,237 @@
+/* DebugPanel.css - Styles for the debug visualization features */
+
+.debug-panel {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Debug overlay styles */
+.debug-mode .canvas-container {
+  position: relative;
+}
+
+.debug-bounding-box {
+  position: absolute;
+  border: 2px dashed #f9e2af;
+  background: rgba(249, 226, 175, 0.1);
+  pointer-events: none;
+  z-index: 1000;
+  transition: all 0.2s ease;
+}
+
+.debug-bounding-box:hover {
+  background: rgba(249, 226, 175, 0.2);
+  border-color: #fab387;
+}
+
+.debug-bounding-box.selected {
+  border: 2px solid #a6e3a1;
+  background: rgba(166, 227, 161, 0.15);
+}
+
+.debug-bounding-box::after {
+  content: attr(data-label);
+  position: absolute;
+  top: -20px;
+  left: 0;
+  background: #f9e2af;
+  color: #1e1e2e;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.debug-bounding-box.selected::after {
+  background: #a6e3a1;
+}
+
+/* Position markers */
+.debug-position-marker {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #a6e3a1;
+  border: 2px solid #1e1e2e;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1001;
+}
+
+.debug-position-marker::after {
+  content: attr(data-coords);
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #181825;
+  color: #a6e3a1;
+  font-size: 9px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+/* Grid overlay */
+.debug-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(to right, rgba(108, 112, 134, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(108, 112, 134, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.debug-grid.fine {
+  background-size: 10px 10px;
+  background-image: 
+    linear-gradient(to right, rgba(108, 112, 134, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(108, 112, 134, 0.05) 1px, transparent 1px);
+}
+
+/* Debug info tooltips */
+.debug-tooltip {
+  position: absolute;
+  background: #181825;
+  border: 1px solid #313244;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #cdd6f4;
+  z-index: 1002;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.debug-tooltip .label {
+  color: #6c7086;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.debug-tooltip .value {
+  color: #f9e2af;
+  font-weight: 600;
+}
+
+/* Canvas cursor in debug mode */
+.debug-mode canvas {
+  cursor: crosshair !important;
+}
+
+/* Annotation highlight in debug mode */
+.debug-mode .annotation {
+  outline: 1px solid rgba(249, 226, 175, 0.3);
+}
+
+.debug-mode .annotation:hover {
+  outline: 2px solid #f9e2af;
+}
+
+/* Measurement lines */
+.debug-measurement {
+  position: absolute;
+  background: #f38ba8;
+  z-index: 1000;
+}
+
+.debug-measurement.horizontal {
+  height: 1px;
+}
+
+.debug-measurement.vertical {
+  width: 1px;
+}
+
+.debug-measurement::after {
+  content: attr(data-value);
+  position: absolute;
+  background: #f38ba8;
+  color: #1e1e2e;
+  font-size: 9px;
+  padding: 1px 3px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+/* Text element debug info */
+.debug-text-info {
+  position: absolute;
+  background: rgba(30, 30, 46, 0.95);
+  border: 1px solid #f9e2af;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 10px;
+  color: #cdd6f4;
+  z-index: 1003;
+  max-width: 200px;
+}
+
+.debug-text-info .property {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.debug-text-info .property-name {
+  color: #6c7086;
+}
+
+.debug-text-info .property-value {
+  color: #f9e2af;
+  font-family: monospace;
+}
+
+/* Drawing annotation debug */
+.debug-drawing-path {
+  stroke: #f9e2af;
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 5, 5;
+  pointer-events: none;
+}
+
+.debug-drawing-points {
+  fill: #a6e3a1;
+  stroke: #1e1e2e;
+  stroke-width: 1;
+}
+
+/* Performance overlay */
+.debug-performance {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(24, 24, 37, 0.95);
+  border: 1px solid #313244;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 10px;
+  color: #cdd6f4;
+  z-index: 1004;
+  font-family: monospace;
+}
+
+.debug-performance .metric {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.debug-performance .metric-value {
+  color: #a6e3a1;
+}
+
+.debug-performance .metric-value.warning {
+  color: #f9e2af;
+}
+
+.debug-performance .metric-value.critical {
+  color: #f38ba8;
+}
