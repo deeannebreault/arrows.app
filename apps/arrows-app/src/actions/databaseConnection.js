@@ -1,7 +1,7 @@
 import {fetchGraphFromDatabase, updateDriver} from "../storage/neo4jStorage";
 import {rememberConnectionParameters, retrieveConnectionParameters} from "./localStorage";
 
-const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
+import neo4j from "neo4j-driver";
 
 export const initializeConnection = () => {
   return usingRememberedConnectionParameters()
