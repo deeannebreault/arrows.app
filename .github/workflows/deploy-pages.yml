@@ -34,15 +34,31 @@ jobs:
         run: |
           cd apps/arrows-app
           npx vite build --outDir ../../dist
+          echo "Build exit code: $?"
         env:
           CI: false
+          
+      - name: Debug Build Output
+        run: |
+          echo "=== Current directory ==="
+          pwd
+          echo "=== Contents of repo root ==="
+          ls -la
+          echo "=== Contents of dist/ ==="
+          ls -la dist/ 2>/dev/null || echo "No dist/"
+          echo "=== Find index.html ==="
+          find . -name "index.html" -type f 2>/dev/null
           
       - name: Prepare Pages
         run: |
           mkdir -p public
-          cp -r dist/* public/
+          if [ -f "dist/index.html" ]; then
+            cp -r dist/* public/
+          else
+            echo "ERROR: dist/index.html not found!"
+            exit 1
+          fi
           ls -la public/
-          test -f public/index.html || (echo "ERROR: index.html not found!" && exit 1)
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
