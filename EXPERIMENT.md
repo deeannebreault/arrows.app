@@ -1,7 +1,7 @@
-# 🧪 Experiment: Create graph statistics dashboard
+# 🧪 Experiment: Add node search with fuzzy matching
 
-**Branch:** exp/create-graph-statistics-dashboard-1772319601  
-**Started:** 2026-02-28 16:00  
+**Branch:** exp/add-node-search-with-fuzzy-matching-1772352001  
+**Started:** 2026-03-01 01:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,13 +13,13 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Create graph statistics dashboard
+Add node search with fuzzy matching
 
 ## Why This Helps
 - Core UX improvement for graph editing
 
 ## Implementation
-Created experiment documentation
+Created node search component
 
 ## Next Steps
 1. Review the generated code
