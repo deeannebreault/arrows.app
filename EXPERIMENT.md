@@ -1,7 +1,7 @@
-# 🧪 Experiment: Implement node pinning/fixed positions
+# 🧪 Experiment: Create layout presets (force-directed, hierarchical, circular)
 
-**Branch:** exp/implement-node-pinning-fixed-positions-1772362801  
-**Started:** 2026-03-01 04:00  
+**Branch:** exp/create-layout-presets-(force-directed,-hierarchica-1772366402  
+**Started:** 2026-03-01 05:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Implement node pinning/fixed positions
+Create layout presets (force-directed, hierarchical, circular)
 
 ## Why This Helps
 - Core UX improvement for graph editing
