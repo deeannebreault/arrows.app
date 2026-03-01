@@ -1,7 +1,7 @@
-# 🧪 Experiment: Implement node pinning/fixed positions
+# 🧪 Experiment: Create dark/light theme toggle
 
-**Branch:** exp/implement-node-pinning-fixed-positions-1772370001  
-**Started:** 2026-03-01 06:00  
+**Branch:** exp/create-dark-light-theme-toggle-1772373602  
+**Started:** 2026-03-01 07:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,7 +13,7 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Implement node pinning/fixed positions
+Create dark/light theme toggle
 
 ## Why This Helps
 - Core UX improvement for graph editing
