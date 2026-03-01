@@ -1,9 +1,9 @@
-# 🧪 Experiment: Add code import from GitHub repos
+# 🧪 Experiment: Implement node pinning/fixed positions
 
-**Branch:** exp/add-code-import-from-github-repos-1772359202  
-**Started:** 2026-03-01 03:00  
+**Branch:** exp/implement-node-pinning-fixed-positions-1772362801  
+**Started:** 2026-03-01 04:00  
 **Status:** 🚧 In Progress  
-**Reason:** Priority: Based on your recent work
+**Reason:** Core UX improvement
 
 ## Context
 This experiment was chosen based on:
@@ -13,13 +13,13 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Add code import from GitHub repos
+Implement node pinning/fixed positions
 
 ## Why This Helps
 - Core UX improvement for graph editing
 
 ## Implementation
-Created Ladybug code import panel
+Created experiment documentation
 
 ## Next Steps
 1. Review the generated code
