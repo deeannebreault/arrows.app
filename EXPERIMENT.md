@@ -1,9 +1,9 @@
-# 🧪 Experiment: Add collaborative cursors for pair programming
+# 🧪 Experiment: Add code import from GitHub repos
 
-**Branch:** exp/add-collaborative-cursors-for-pair-programming-1772355601  
-**Started:** 2026-03-01 02:00  
+**Branch:** exp/add-code-import-from-github-repos-1772359202  
+**Started:** 2026-03-01 03:00  
 **Status:** 🚧 In Progress  
-**Reason:** Core UX improvement
+**Reason:** Priority: Based on your recent work
 
 ## Context
 This experiment was chosen based on:
@@ -13,13 +13,13 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Add collaborative cursors for pair programming
+Add code import from GitHub repos
 
 ## Why This Helps
 - Core UX improvement for graph editing
 
 ## Implementation
-Created experiment documentation
+Created Ladybug code import panel
 
 ## Next Steps
 1. Review the generated code
