@@ -1,7 +1,7 @@
-# 🧪 Experiment: Add node search with fuzzy matching
+# 🧪 Experiment: Add collaborative cursors for pair programming
 
-**Branch:** exp/add-node-search-with-fuzzy-matching-1772352001  
-**Started:** 2026-03-01 01:00  
+**Branch:** exp/add-collaborative-cursors-for-pair-programming-1772355601  
+**Started:** 2026-03-01 02:00  
 **Status:** 🚧 In Progress  
 **Reason:** Core UX improvement
 
@@ -13,13 +13,13 @@ This experiment was chosen based on:
 - Integration with Ladybug pipeline
 
 ## The Idea
-Add node search with fuzzy matching
+Add collaborative cursors for pair programming
 
 ## Why This Helps
 - Core UX improvement for graph editing
 
 ## Implementation
-Created node search component
+Created experiment documentation
 
 ## Next Steps
 1. Review the generated code
