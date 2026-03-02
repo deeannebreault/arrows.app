@@ -1,6 +1,7 @@
 import {connect} from "react-redux"
 import GraphDisplay from "../components/GraphDisplay"
-import {compose} from "react-recompose"
+// Simple compose implementation
+const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x)
 import withKeyBindings from "../interactions/Keybindings"
 import {
   getVisualGraph,

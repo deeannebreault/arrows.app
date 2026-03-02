@@ -1,5 +1,8 @@
+import React from "react";
+// Simple withProps implementation
+const withProps = (propsToAdd) => (Component) => (props) => React.createElement(Component, { ...props, ...propsToAdd });
 
-import { withProps } from 'react-recompose'
+
 
 export const SELECT_ALL = 'SELECT_ALL'
 export const DESELECT_ALL_NODES = 'DESELECT_ALL_NODES'
