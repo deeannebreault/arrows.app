@@ -166,6 +166,15 @@ class Header extends PureComponent {
               content='Download / Export'
             />
           </Menu.Item>
+          <Menu.Item>
+            <Button
+              onClick={this.props.onShareClick}
+              icon='share'
+              basic
+              color='blue'
+              content='Share'
+            />
+          </Menu.Item>
           {this.props.storage.mode === 'GOOGLE_DRIVE' ?
             <Menu.Item>
               <Button
