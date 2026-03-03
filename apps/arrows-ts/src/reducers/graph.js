@@ -468,7 +468,6 @@ const graph = (state = emptyGraph(), action) => {
     case 'REVERSE_RELATIONSHIPS':
       return {
         ...state,
-        ...state,
         relationships: state.relationships.map((relationship) =>
           relationshipSelected(action.selection, relationship.id)
             ? reverse(relationship)
@@ -478,7 +477,6 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'INLINE_RELATIONSHIPS':
       return {
-        ...state,
         ...state,
         nodes: state.nodes
           .filter(
@@ -521,20 +519,17 @@ const graph = (state = emptyGraph(), action) => {
     case 'CREATE_TEXT_ANNOTATION':
       return {
         ...state,
-        ...state,
         annotations: [...(state.annotations || []), action.annotation],
       };
 
     case 'CREATE_DRAWING_ANNOTATION':
       return {
         ...state,
-        ...state,
         annotations: [...(state.annotations || []), action.annotation],
       };
 
     case 'ADD_DRAWING_POINT':
       return {
-        ...state,
         ...state,
         annotations: (state.annotations || []).map((annotation) =>
           annotation.id === action.annotationId
@@ -546,7 +541,6 @@ const graph = (state = emptyGraph(), action) => {
     case 'SET_ANNOTATION_TEXT':
       return {
         ...state,
-        ...state,
         annotations: (state.annotations || []).map((annotation) =>
           annotation.id === action.annotationId
             ? modelSetAnnotationText(annotation, action.text)
@@ -556,7 +550,6 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'MOVE_ANNOTATION':
       return {
-        ...state,
         ...state,
         annotations: (state.annotations || []).map((annotation) =>
           annotation.id === action.annotationId
@@ -568,7 +561,6 @@ const graph = (state = emptyGraph(), action) => {
     case 'SET_ANNOTATION_STYLE':
       return {
         ...state,
-        ...state,
         annotations: (state.annotations || []).map((annotation) =>
           annotation.id === action.annotationId
             ? modelSetAnnotationStyle(annotation, action.style)
@@ -578,7 +570,6 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'DELETE_ANNOTATION':
       return {
-        ...state,
         ...state,
         annotations: (state.annotations || []).filter(
           (annotation) => annotation.id !== action.annotationId

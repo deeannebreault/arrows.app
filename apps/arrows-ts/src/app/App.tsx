@@ -15,6 +15,7 @@ import FooterContainer from "../containers/FooterContainer";
 import LocalStoragePickerContainer from "../containers/LocalStoragePickerContainer";
 import SaveAsContainer from "../containers/SaveAsContainer";
 import ImportContainer from "../containers/ImportContainer";
+import ShareModal from "../components/ShareModal";
 import {handlePaste} from "../actions/import";
 import {handleCopy} from "../actions/export";
 import {linkToGoogleFontsCss} from "../graphics/utils/fontWrangling";
@@ -64,6 +65,7 @@ class App extends Component<AppProps> {
     const saveAsModal = showSaveAsDialog ? (<SaveAsContainer/>) : null
     const exportModal = showExportDialog ? (<ExportContainer/>) : null
     const importModal = showImportDialog ? (<ImportContainer/>) : null
+    const shareModal = <ShareModal />
     const googleDriveModal = pickingFromGoogleDrive ? <GoogleDrivePicker onCancelPicker={onCancelPicker} onFilePicked={loadFromGoogleDrive} /> : null
     const localStorageModal = pickingFromLocalStorage ? <LocalStoragePickerContainer/> : null
 
@@ -92,6 +94,7 @@ class App extends Component<AppProps> {
         {saveAsModal}
         {exportModal}
         {importModal}
+        {shareModal}
         {googleDriveModal}
         {localStorageModal}
         <GoogleSignInModal/>

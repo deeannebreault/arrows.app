@@ -209,12 +209,10 @@ export default class VisualGraph {
       visualNode.draw(ctx);
     });
     // Draw annotations (safely)
-    console.log('Drawing annotations:', this.annotations);
     if (this.annotations && Array.isArray(this.annotations)) {
       this.annotations.forEach((annotation) => {
         if (!annotation) return;
         try {
-          console.log('Drawing annotation:', annotation.type, annotation);
           if (annotation.type === 'TEXT') {
             drawTextAnnotation(ctx, annotation, viewTransformation);
           } else if (annotation.type === 'DRAWING') {
