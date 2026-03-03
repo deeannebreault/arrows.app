@@ -45,3 +45,15 @@ export const hideHelpDialog = () => {
     type: 'HIDE_HELP_DIALOG'
   }
 }
+
+export const showShareDialog = () => {
+  return {
+    type: 'SHOW_SHARE_DIALOG'
+  }
+}
+
+export const hideShareDialog = () => {
+  return {
+    type: 'HIDE_SHARE_DIALOG'
+  }
+}
