@@ -4,6 +4,8 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  VITE_SHARE_URL = "https://srv1410555.hstgr.cloud"
+  VITE_WS_URL = "wss://srv1410555.hstgr.cloud/collab-ws"
 
 # SPA routing: all paths serve index.html
 [[redirects]]
