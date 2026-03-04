@@ -2,6 +2,7 @@ export const importJsonRegex = /^#\/import\/json=(.*)/
 export const localUrlNoIdRegex = /^#\/local$/
 export const localUrlRegex = /^#\/local\/id=(.*)/
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
+export const collabUrlRegex = /^#\/collab\/(.+)/
 
 export const windowLocationHashMiddleware = store => next => action => {
   const oldStorage = store.getState().storage
@@ -20,6 +21,11 @@ export const windowLocationHashMiddleware = store => next => action => {
         break
       case 'LOCAL_STORAGE':
         window.location.hash = `#/local/id=${newStorage.fileId}`
+        break
+      case 'COLLAB':
+        if (newStorage.sessionId) {
+          window.location.hash = `#/collab/${newStorage.sessionId}`
+        }
         break
     }
   }

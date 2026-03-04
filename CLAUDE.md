@@ -2,6 +2,28 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Session Start Checklist
+
+At the start of each session:
+1. **Check tasks**: `bash tasks.sh` — reviews `CLAUDE_TASKS.md` for current priorities
+2. **Search history**: Use the `claude-historian-mcp` MCP tool to search past conversations for relevant context, previous solutions, or prior decisions before starting new work. Search for file names, error messages, or feature names.
+3. **Update CLAUDE_TASKS.md** when tasks are completed or new ones are identified
+
+## Tools
+
+### Tasks CLI
+```bash
+bash tasks.sh          # Show current task list from CLAUDE_TASKS.md
+```
+Edit `CLAUDE_TASKS.md` directly to add, update, or check off tasks.
+
+### Claude Historian MCP
+Registered as `claude-historian-mcp` — searches past Claude Code conversation history.
+Use it to find:
+- Previous solutions to similar problems
+- Decisions made in earlier sessions
+- Context about how features were built
+
 ## Commands
 
 ```bash

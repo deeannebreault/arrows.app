@@ -9,7 +9,15 @@ export default defineConfig({
 
   server: {
     port: 4200,
-    host: 'localhost',
+    host: '0.0.0.0',
+    proxy: {
+      '/api/share': 'http://localhost:3001',
+      '/collab-ws': {
+        target: 'ws://localhost:3002',
+        ws: true,
+        rewrite: (path) => path.replace(/^\/collab-ws/, '')
+      }
+    }
   },
 
   preview: {

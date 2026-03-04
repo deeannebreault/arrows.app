@@ -16,6 +16,7 @@ import {initGoogleDriveApi} from "./actions/googleDrive";
 import {windowResized} from "./actions/applicationLayout";
 import {initRecentStorage, recentStorageMiddleware} from "./middlewares/recentStorageMiddleware";
 import {imageCacheMiddleware} from "./middlewares/imageCacheMiddleware";
+import {collaborationMiddleware} from "./middlewares/collaborationMiddleware";
 
 import './styles.css'
 
@@ -24,6 +25,7 @@ import App from './app/App';
 const middleware = [
   recentStorageMiddleware,
   storageMiddleware,
+  collaborationMiddleware,
   windowLocationHashMiddleware,
   viewportMiddleware,
   imageCacheMiddleware

@@ -15,6 +15,7 @@ import gangs from './gangs'
 import features from './features'
 import googleDrive from "./googleDrive"
 import cachedImages from "./cachedImages";
+import collaboration from "./collaboration";
 
 const arrowsApp = combineReducers({
   recentStorage,
@@ -32,7 +33,8 @@ const arrowsApp = combineReducers({
   gangs,
   features,
   googleDrive,
-  cachedImages
+  cachedImages,
+  collaboration
 })
 
 export default arrowsApp

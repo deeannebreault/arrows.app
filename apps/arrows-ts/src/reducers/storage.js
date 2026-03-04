@@ -3,7 +3,8 @@ import {
   googleDriveUrlRegex,
   importJsonRegex,
   localUrlNoIdRegex,
-  localUrlRegex
+  localUrlRegex,
+  collabUrlRegex
 } from "../middlewares/windowLocationHashMiddleware";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
 import {loadLegacyAppData, loadRecentlyAccessedDiagrams, saveGraphToLocalStorage} from "../actions/localStorage";
@@ -127,8 +128,15 @@ const initialiseStorageFromWindowLocationHash = () => {
   const localNoIdMatch = localUrlNoIdRegex.exec(hash)
   const localMatch = localUrlRegex.exec(hash)
   const googleDriveMatch = googleDriveUrlRegex.exec(hash)
+  const collabMatch = collabUrlRegex.exec(hash)
 
-  if (importJsonMatch) {
+  if (collabMatch) {
+    return {
+      mode: 'COLLAB',
+      status: 'READY',
+      sessionId: collabMatch[1],
+    }
+  } else if (importJsonMatch) {
     const b64Json = importJsonMatch[1]
     try {
       const data = JSON.parse(Base64.decode(b64Json))
