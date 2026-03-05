@@ -515,6 +515,9 @@ const graph = (state = emptyGraph(), action) => {
     case 'GETTING_GRAPH_SUCCEEDED':
       return action.storedGraph;
 
+    case 'COLLAB_REDRAW':
+      return { ...state };
+
     // Annotation cases
     case 'CREATE_TEXT_ANNOTATION':
       return {

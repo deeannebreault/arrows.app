@@ -16,6 +16,7 @@ import LocalStoragePickerContainer from "../containers/LocalStoragePickerContain
 import SaveAsContainer from "../containers/SaveAsContainer";
 import ImportContainer from "../containers/ImportContainer";
 import ShareModal from "../components/ShareModal";
+import CollabControlPanel from "../components/CollabControlPanel";
 import {handlePaste} from "../actions/import";
 import {handleCopy} from "../actions/export";
 import {linkToGoogleFontsCss} from "../graphics/utils/fontWrangling";
@@ -109,6 +110,7 @@ class App extends Component<AppProps> {
           {inspector}
         </section>
         <FooterContainer/>
+        <CollabControlPanel/>
       </div>
     );
   }

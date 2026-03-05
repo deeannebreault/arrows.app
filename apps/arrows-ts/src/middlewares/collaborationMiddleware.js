@@ -51,7 +51,7 @@ function connect(id, store) {
   ws.onopen = () => {
     console.log('[collab] Connected to session', id)
     reconnectDelay = 1000
-    store.dispatch({ type: 'SET_COLLAB_SESSION', sessionId: id })
+    store.dispatch({ type: 'SET_COLLAB_SESSION', sessionId: id, userId: getUserId() })
   }
 
   ws.onmessage = (event) => {
@@ -77,41 +77,48 @@ function connect(id, store) {
   }
 }
 
+function applyRemoteGraph(graph, store) {
+  if (!graph) return
+  try {
+    const parsed = constructGraphFromFile(graph).graph
+    _remoteUpdate = true
+    store.dispatch({ type: 'GETTING_GRAPH_SUCCEEDED', storedGraph: parsed })
+    _remoteUpdate = false
+    // Dispatch a no-op viewport action to guarantee a canvas redraw
+    store.dispatch({ type: 'COLLAB_REDRAW' })
+  } catch (e) {
+    console.warn('[collab] Failed to apply remote graph', e)
+  }
+}
+
 function handleServerMessage(msg, store) {
   switch (msg.type) {
     case 'session_state': {
       const graph = msg.data?.graph
       if (graph) {
-        _remoteUpdate = true
-        store.dispatch({ type: 'GETTING_GRAPH_SUCCEEDED', storedGraph: constructGraphFromFile(graph).graph })
-        _remoteUpdate = false
+        applyRemoteGraph(graph, store)
       } else if (sessionId) {
-        // WS server lost the in-memory graph (no clients were connected).
-        // Fall back to the REST API which persists graphs in the database.
+        // WS server lost the in-memory graph — fall back to REST API
         const url = `${SHARE_URL}/api/share/${encodeURIComponent(sessionId)}`
         const headers = {}
         if (import.meta.env?.VITE_API_KEY) headers['x-api-key'] = import.meta.env.VITE_API_KEY
         fetch(url, { headers })
           .then(r => r.ok ? r.json() : null)
-          .then(data => {
-            if (data?.graphData) {
-              _remoteUpdate = true
-              store.dispatch({ type: 'GETTING_GRAPH_SUCCEEDED', storedGraph: constructGraphFromFile(data.graphData).graph })
-              _remoteUpdate = false
-            }
-          })
+          .then(data => { if (data?.graphData) applyRemoteGraph(data.graphData, store) })
           .catch(e => console.warn('[collab] Could not fetch graph from REST API', e))
       }
-      const participants = msg.data?.participants || []
-      store.dispatch({ type: 'UPDATE_PARTICIPANTS', participants })
+      store.dispatch({ type: 'UPDATE_PARTICIPANTS', participants: msg.data?.participants || [] })
+      store.dispatch({ type: 'CONTROL_UPDATE', tokenHolder: msg.data?.token_holder || null })
       break
     }
     case 'graph_update': {
-      const graph = msg.data
-      if (graph) {
-        _remoteUpdate = true
-        store.dispatch({ type: 'GETTING_GRAPH_SUCCEEDED', storedGraph: constructGraphFromFile(graph).graph })
-        _remoteUpdate = false
+      applyRemoteGraph(msg.data, store)
+      break
+    }
+    case 'control_update': {
+      store.dispatch({ type: 'CONTROL_UPDATE', tokenHolder: msg.data?.token_holder || null })
+      if (msg.data?.graph) {
+        applyRemoteGraph(msg.data.graph, store)
       }
       break
     }
@@ -126,7 +133,6 @@ function handleServerMessage(msg, store) {
     }
     case 'participant_joined':
     case 'participant_left': {
-      // Re-request full participant list via get_state
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: 'get_state' }))
       }
@@ -140,6 +146,18 @@ function handleServerMessage(msg, store) {
 function sendGraphUpdate(graph) {
   if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ type: 'graph_update', data: graph }))
+  }
+}
+
+export function claimControl() {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: 'claim_control' }))
+  }
+}
+
+export function releaseControl(graph) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: 'release_control', data: { graph } }))
   }
 }
 

@@ -1,13 +1,18 @@
 const initialState = {
   sessionId: null,
   participants: [],
-  cursors: {}
+  cursors: {},
+  tokenHolder: null,   // { id, name } or null
+  myUserId: null,
 }
 
 const collaboration = (state = initialState, action) => {
   switch (action.type) {
     case 'SET_COLLAB_SESSION':
-      return { ...state, sessionId: action.sessionId }
+      return { ...state, sessionId: action.sessionId, myUserId: action.userId || state.myUserId }
+
+    case 'CONTROL_UPDATE':
+      return { ...state, tokenHolder: action.tokenHolder }
 
     case 'UPDATE_PARTICIPANTS':
       return { ...state, participants: action.participants }
