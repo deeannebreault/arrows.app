@@ -73,6 +73,13 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
         status: 'GETTING'
       }
     }
+    case 'SET_COLLAB_SESSION': {
+      return {
+        mode: 'COLLAB',
+        status: 'READY',
+        sessionId: action.sessionId,
+      }
+    }
     case 'GETTING_GRAPH_SUCCEEDED': {
       return {
         ...state,
