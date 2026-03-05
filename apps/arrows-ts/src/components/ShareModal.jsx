@@ -13,6 +13,18 @@ function apiHeaders() {
   return headers;
 }
 
+const NAME_KEY = 'collab_user_name';
+
+function getSavedName() {
+  return localStorage.getItem(NAME_KEY) || '';
+}
+
+function saveName(name) {
+  const trimmed = name.trim() || 'Anonymous';
+  localStorage.setItem(NAME_KEY, trimmed);
+  sessionStorage.setItem(NAME_KEY, trimmed);
+}
+
 function ShareModal({ showModal, graph, diagramName, onClose }) {
   const [view, setView] = useState('browser'); // 'browser' | 'new'
   const [sessions, setSessions] = useState([]);
@@ -22,6 +34,7 @@ function ShareModal({ showModal, graph, diagramName, onClose }) {
   const [sessionUrl, setSessionUrl] = useState(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState(null);
+  const [yourName, setYourName] = useState(getSavedName);
 
   const fetchSessions = useCallback(async () => {
     setLoadingSessions(true);
@@ -60,11 +73,13 @@ function ShareModal({ showModal, graph, diagramName, onClose }) {
   }, [view, diagramName]);
 
   const handleJoin = (session) => {
+    saveName(yourName);
     window.location.hash = `/collab/${session.id}`;
     onClose();
   };
 
   const handleCreate = async () => {
+    saveName(yourName);
     setCreating(true);
     setError(null);
     try {
@@ -101,6 +116,15 @@ function ShareModal({ showModal, graph, diagramName, onClose }) {
       </Modal.Header>
 
       <Modal.Content>
+        <Input
+          fluid
+          label={<label style={{ display: 'flex', alignItems: 'center', padding: '0 0.75em', background: '#f5f5f5', border: '1px solid rgba(34,36,38,.15)', borderRight: 'none', borderRadius: '4px 0 0 4px', whiteSpace: 'nowrap' }}>Your name</label>}
+          placeholder='How others will see you…'
+          value={yourName}
+          onChange={e => setYourName(e.target.value)}
+          style={{ marginBottom: '1.25em' }}
+        />
+
         {view === 'browser' && (
           <>
             {loadingSessions && <Loader active inline='centered' content='Loading sessions…' style={{ marginBottom: '1em' }} />}
