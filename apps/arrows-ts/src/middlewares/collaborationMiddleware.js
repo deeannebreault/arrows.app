@@ -85,6 +85,22 @@ function handleServerMessage(msg, store) {
         _remoteUpdate = true
         store.dispatch({ type: 'GETTING_GRAPH_SUCCEEDED', storedGraph: constructGraphFromFile(graph).graph })
         _remoteUpdate = false
+      } else if (sessionId) {
+        // WS server lost the in-memory graph (no clients were connected).
+        // Fall back to the REST API which persists graphs in the database.
+        const url = `${SHARE_URL}/api/share/${encodeURIComponent(sessionId)}`
+        const headers = {}
+        if (import.meta.env?.VITE_API_KEY) headers['x-api-key'] = import.meta.env.VITE_API_KEY
+        fetch(url, { headers })
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (data?.graphData) {
+              _remoteUpdate = true
+              store.dispatch({ type: 'GETTING_GRAPH_SUCCEEDED', storedGraph: constructGraphFromFile(data.graphData).graph })
+              _remoteUpdate = false
+            }
+          })
+          .catch(e => console.warn('[collab] Could not fetch graph from REST API', e))
       }
       const participants = msg.data?.participants || []
       store.dispatch({ type: 'UPDATE_PARTICIPANTS', participants })

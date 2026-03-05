@@ -16,13 +16,24 @@ import os
 
 SHARE_SERVER_URL = os.environ.get('SHARE_SERVER_URL', 'http://localhost:3001')
 PORT = int(os.environ.get('PORT', 3002))
+API_KEY = os.environ.get('API_KEY')
+
+
+def _api_headers(extra: dict = None) -> dict:
+    h = {}
+    if API_KEY:
+        h['x-api-key'] = API_KEY
+    if extra:
+        h.update(extra)
+    return h
 
 
 def fetch_graph_from_share_server(session_id: str) -> Optional[dict]:
     """Fetch current graph_data from the share server (synchronous)."""
     try:
         url = f"{SHARE_SERVER_URL}/api/share/{session_id}"
-        with urllib.request.urlopen(url, timeout=5) as resp:
+        req = urllib.request.Request(url, headers=_api_headers())
+        with urllib.request.urlopen(req, timeout=5) as resp:
             data = json.loads(resp.read())
             return data.get('graphData')
     except Exception as e:
@@ -37,7 +48,7 @@ def persist_graph_to_share_server(session_id: str, graph_data: dict):
         req = urllib.request.Request(
             f"{SHARE_SERVER_URL}/api/share/{session_id}/graph",
             data=payload,
-            headers={'Content-Type': 'application/json'},
+            headers=_api_headers({'Content-Type': 'application/json'}),
             method='PUT'
         )
         urllib.request.urlopen(req, timeout=5)
