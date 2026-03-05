@@ -27,7 +27,19 @@ function getUserName() {
   return sessionStorage.getItem('collab_user_name') || 'Anonymous'
 }
 
+function disconnect() {
+  if (ws) {
+    ws.onclose = null // prevent reconnect loop
+    ws.close()
+    ws = null
+  }
+  sessionId = null
+  clearTimeout(debounceTimer)
+}
+
 function connect(id, store) {
+  if (sessionId === id) return // already in this session
+  disconnect()
   sessionId = id
   storeRef = store
   const userId = getUserId()
@@ -115,15 +127,23 @@ function sendGraphUpdate(graph) {
   }
 }
 
+function checkHash(store) {
+  const match = window.location.hash.match(collabUrlRegex)
+  if (match) {
+    connect(match[1], store)
+  } else if (sessionId) {
+    disconnect()
+  }
+}
+
 export const collaborationMiddleware = store => next => action => {
   const result = next(action)
 
-  // Check for collab URL on startup (any action can trigger this once)
-  if (!sessionId) {
-    const match = window.location.hash.match(collabUrlRegex)
-    if (match) {
-      connect(match[1], store)
-    }
+  // Listen for hash changes (joining/switching sessions)
+  if (!window._collabHashListenerSet) {
+    window._collabHashListenerSet = true
+    window.addEventListener('hashchange', () => checkHash(store))
+    checkHash(store) // check on startup
   }
 
   // Skip broadcasting remote updates to prevent echo loops
