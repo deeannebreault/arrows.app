@@ -5,14 +5,30 @@ const { Pool } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const API_KEY = process.env.API_KEY || null;
+
+const ALLOWED_ORIGINS = [
+  'https://arrows-app-deeslab.netlify.app',
+  'http://localhost:4200',
+  'http://localhost:4300',
+];
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://clawuser:openclaw_secure_2026@localhost:5432/openclaw',
   ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
 });
 
-app.use(cors());
+app.use(cors({ origin: ALLOWED_ORIGINS }));
 app.use(express.json({ limit: '10mb' }));
+
+// API key guard — exempt health check so monitoring works without a key
+app.use((req, res, next) => {
+  if (req.path === '/api/health') return next();
+  if (API_KEY && req.headers['x-api-key'] !== API_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+});
 
 // POST /api/share - Create a new collab session with initial graph data
 // Accepts either { graphData } (new) or { graphId } (legacy)
@@ -148,12 +164,18 @@ app.delete('/api/share/:id', async (req, res) => {
   }
 });
 
-// GET /api/shares - List sessions (admin)
+// GET /api/shares?active=true - List sessions (optionally filter to recently active)
 app.get('/api/shares', async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT id, diagram_name, permission, created_by, created_at, access_count FROM collab_sessions ORDER BY created_at DESC'
-    );
+    const query = req.query.active === 'true'
+      ? `SELECT id, diagram_name, permission, created_by, created_at, updated_at, access_count
+         FROM collab_sessions
+         WHERE updated_at > NOW() - INTERVAL '2 hours'
+         ORDER BY updated_at DESC`
+      : `SELECT id, diagram_name, permission, created_by, created_at, updated_at, access_count
+         FROM collab_sessions
+         ORDER BY created_at DESC`;
+    const result = await pool.query(query);
     res.json({ success: true, sessions: result.rows, count: result.rows.length });
   } catch (err) {
     console.error('Error listing sessions:', err);
