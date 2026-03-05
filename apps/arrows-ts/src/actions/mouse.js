@@ -14,8 +14,7 @@ import {
 } from './graph';
 import {
   createTextAnnotation,
-  createDrawingAnnotation,
-  addDrawingPoint,
+  createRectangleAnnotation,
   moveAnnotation,
 } from './annotations';
 import { adjustViewport } from './viewTransformation';
@@ -200,9 +199,15 @@ export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
         if (!multiSelectModifierKey) {
           dispatch(clearSelection());
         }
-        // Check if we're in drawing mode
         if (drawingMode) {
-          dispatch(startDrawing(graphPosition));
+          if (state.mouse.dragType === 'RECT_AWAITING') {
+            // Second click — complete the rectangle
+            dispatch(createRectangleAnnotation(state.mouse.firstCorner, graphPosition));
+            dispatch(endDrag());
+          } else {
+            // First click — set first corner
+            dispatch({ type: 'RECT_START', graphPosition });
+          }
         } else {
           dispatch(mouseDownOnCanvas(canvasPosition, graphPosition));
         }
@@ -249,20 +254,6 @@ const mouseDownOnAnnotation = (annotation, canvasPosition, graphPosition) => ({
   graphPosition,
 });
 
-const startDrawing = (graphPosition) => (dispatch, getState) => {
-  dispatch(createDrawingAnnotation());
-  const state = getState();
-  const graph = getPresentGraph(state);
-  const annotations = graph.annotations || [];
-  const lastAnnotation = annotations[annotations.length - 1];
-  if (lastAnnotation && lastAnnotation.type === 'DRAWING') {
-    dispatch(addDrawingPoint(lastAnnotation.id, graphPosition));
-  }
-  return {
-    type: 'START_DRAWING',
-    graphPosition,
-  };
-};
 
 const furtherThanDragThreshold = (previousPosition, newPosition) => {
   const movementDelta = newPosition.vectorFrom(previousPosition);
@@ -359,13 +350,8 @@ export const mouseMove = (canvasPosition) => {
           }
           break;
 
-        case 'DRAWING':
-          const graph = getPresentGraph(state);
-          const annotations = graph.annotations || [];
-          const lastAnnotation = annotations[annotations.length - 1];
-          if (lastAnnotation && lastAnnotation.type === 'DRAWING') {
-            dispatch(addDrawingPoint(lastAnnotation.id, graphPosition));
-          }
+        case 'RECT_AWAITING':
+          dispatch({ type: 'RECT_PREVIEW', graphPosition });
           break;
 
         case 'NODE_RING':
@@ -411,9 +397,6 @@ export const mouseUp = () => {
         case 'ANNOTATION':
           // Annotation move complete
           break;
-        case 'DRAWING':
-          // Drawing complete
-          break;
         case 'NODE_RING':
           const dragToCreate = state.gestures.dragToCreate;
 
@@ -449,7 +432,10 @@ export const mouseUp = () => {
       }
     }
 
-    dispatch(endDrag());
+    // Keep RECT_AWAITING state alive — endDrag is only dispatched on the second click
+    if (mouse.dragType !== 'RECT_AWAITING') {
+      dispatch(endDrag());
+    }
   };
 };
 

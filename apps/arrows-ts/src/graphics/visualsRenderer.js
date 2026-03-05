@@ -1,6 +1,7 @@
 import Gestures from "./Gestures";
 import CanvasAdaptor from "./utils/CanvasAdaptor";
 import {VisualGuides} from "./VisualGuides";
+import { drawRectPreview } from "./annotationRenderer";
 
 const layerManager = (() => {
   let layers = []
@@ -19,7 +20,7 @@ const layerManager = (() => {
 })()
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
-  const { visualGraph, backgroundImage, gestures, guides, handles } = visuals
+  const { visualGraph, backgroundImage, gestures, guides, handles, rectPreview } = visuals
 
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
@@ -38,4 +39,9 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   layerManager.register('GUIDES SNAP LINES', visualGuides.draw.bind(visualGuides))
 
   layerManager.renderAll(new CanvasAdaptor(ctx), displayOptions)
+
+  // Draw rect preview with raw ctx (uses strokeRect/fillRect not in CanvasAdaptor)
+  if (rectPreview && rectPreview.from && rectPreview.to) {
+    drawRectPreview(ctx, rectPreview.from, rectPreview.to, displayOptions.viewTransformation)
+  }
 }

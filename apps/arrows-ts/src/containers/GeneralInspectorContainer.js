@@ -10,6 +10,7 @@ import {
 } from '../actions/applicationLayout';
 import { toggleSelection } from '../actions/selection';
 import { Point } from '../model/Point';
+import { computeCanvasSize } from '../model/applicationLayout';
 
 const mapStateToProps = (state) => {
   return {
@@ -33,7 +34,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(createNode());
     },
     onAddTextClick: () => {
-      dispatch(createTextAnnotation(new Point(0, 0), 'New text'));
+      dispatch((dispatch2, getState) => {
+        const state = getState();
+        const vt = state.viewTransformation;
+        const canvasSize = computeCanvasSize(state.applicationLayout);
+        const graphX = (canvasSize.width / 2 - vt.offset.dx) / vt.scale;
+        const graphY = (canvasSize.height / 2 - vt.offset.dy) / vt.scale;
+        dispatch2(createTextAnnotation(new Point(graphX, graphY), 'New text'));
+      });
     },
     onToggleDrawingMode: () => {
       dispatch(toggleDrawingMode());

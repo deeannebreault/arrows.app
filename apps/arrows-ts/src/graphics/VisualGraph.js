@@ -3,6 +3,7 @@ import { combineBoundingBoxes } from './utils/BoundingBox';
 import {
   drawTextAnnotation,
   drawDrawingAnnotation,
+  drawRectangleAnnotation,
   drawAnnotationSelection,
 } from './annotationRenderer';
 import { Point } from '../model/Point';
@@ -78,6 +79,14 @@ export default class VisualGraph {
         }
       }
       return false;
+    } else if (annotation.type === 'RECTANGLE') {
+      const { position, width, height } = annotation;
+      return (
+        point.x >= position.x &&
+        point.x <= position.x + width &&
+        point.y >= position.y &&
+        point.y <= position.y + height
+      );
     }
     return false;
   }
@@ -217,6 +226,8 @@ export default class VisualGraph {
             drawTextAnnotation(ctx, annotation, viewTransformation);
           } else if (annotation.type === 'DRAWING') {
             drawDrawingAnnotation(ctx, annotation, viewTransformation);
+          } else if (annotation.type === 'RECTANGLE') {
+            drawRectangleAnnotation(ctx, annotation);
           }
         } catch (err) {
           console.error('Error drawing annotation:', err, annotation);

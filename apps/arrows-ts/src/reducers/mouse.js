@@ -56,6 +56,21 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
       };
     }
 
+    case 'RECT_START': {
+      return {
+        dragType: 'RECT_AWAITING',
+        firstCorner: action.graphPosition,
+        previewEnd: action.graphPosition,
+      };
+    }
+
+    case 'RECT_PREVIEW': {
+      return {
+        ...state,
+        previewEnd: action.graphPosition,
+      };
+    }
+
     case 'START_DRAWING': {
       return {
         dragType: 'DRAWING',

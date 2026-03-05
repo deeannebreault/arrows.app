@@ -176,6 +176,7 @@ export default function selection(
         ],
       };
     case 'CREATE_DRAWING_ANNOTATION':
+    case 'CREATE_RECTANGLE_ANNOTATION':
       return {
         editing: undefined,
         entities: [

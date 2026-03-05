@@ -22,7 +22,10 @@ const mapStateToProps = state => {
     handles: getTransformationHandles(state),
     canvasSize: computeCanvasSize(state.applicationLayout),
     viewTransformation: state.viewTransformation,
-    storage: state.storage
+    storage: state.storage,
+    rectPreview: state.mouse.dragType === 'RECT_AWAITING'
+      ? { from: state.mouse.firstCorner, to: state.mouse.previewEnd }
+      : null
   }
 }
 

@@ -525,6 +525,12 @@ const graph = (state = emptyGraph(), action) => {
         annotations: [...(state.annotations || []), action.annotation],
       };
 
+    case 'CREATE_RECTANGLE_ANNOTATION':
+      return {
+        ...state,
+        annotations: [...(state.annotations || []), action.annotation],
+      };
+
     case 'CREATE_DRAWING_ANNOTATION':
       return {
         ...state,

@@ -181,4 +181,16 @@ export default class CanvasAdaptor {
   set strokeStyle(value) {
     this.ctx.strokeStyle = value
   }
+
+  set globalAlpha(value) {
+    this.ctx.globalAlpha = value
+  }
+
+  fillRect(x, y, width, height) {
+    this.ctx.fillRect(x, y, width, height)
+  }
+
+  strokeRect(x, y, width, height) {
+    this.ctx.strokeRect(x, y, width, height)
+  }
 }

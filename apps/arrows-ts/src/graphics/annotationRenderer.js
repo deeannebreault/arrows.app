@@ -77,6 +77,56 @@ export const drawDrawingAnnotation = (ctx, annotation, viewTransformation) => {
   ctx.restore();
 };
 
+export const drawRectangleAnnotation = (ctx, annotation) => {
+  const { position, width, height, style } = annotation;
+  if (!position || width <= 0 || height <= 0) return;
+
+  ctx.save();
+
+  if (style.fillOpacity > 0) {
+    ctx.globalAlpha = style.fillOpacity;
+    ctx.fillStyle = style.fillColor || '#4a90d9';
+    ctx.fillRect(position.x, position.y, width, height);
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.strokeStyle = style.strokeColor || '#4a90d9';
+  ctx.lineWidth = style.strokeWidth || 2;
+  ctx.lineJoin = 'round';
+  ctx.strokeRect(position.x, position.y, width, height);
+
+  ctx.restore();
+};
+
+export const drawRectPreview = (ctx, from, to, viewTransformation) => {
+  const x = Math.min(from.x, to.x);
+  const y = Math.min(from.y, to.y);
+  const w = Math.abs(to.x - from.x);
+  const h = Math.abs(to.y - from.y);
+
+  ctx.save();
+  ctx.translate(viewTransformation.offset.dx, viewTransformation.offset.dy);
+  ctx.scale(viewTransformation.scale, viewTransformation.scale);
+
+  ctx.strokeStyle = '#4a90d9';
+  ctx.lineWidth = 2 / viewTransformation.scale;
+  ctx.setLineDash([6 / viewTransformation.scale, 3 / viewTransformation.scale]);
+  ctx.lineJoin = 'round';
+  ctx.strokeRect(x, y, w, h);
+
+  // Corner dots
+  ctx.fillStyle = '#4a90d9';
+  ctx.setLineDash([]);
+  const r = 4 / viewTransformation.scale;
+  [[from.x, from.y], [to.x, to.y]].forEach(([cx, cy]) => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  ctx.restore();
+};
+
 export const drawAnnotationSelection = (
   ctx,
   annotation,
@@ -104,13 +154,19 @@ export const drawAnnotationSelection = (
       maxWidth + 12,
       totalHeight + 8
     );
+  } else if (annotation.type === 'RECTANGLE') {
+    const tl = viewTransformation.apply(annotation.position);
+    const scale = viewTransformation.scale;
+    const padding = 6;
+    ctx.strokeRect(
+      tl.x - padding,
+      tl.y - padding,
+      annotation.width * scale + padding * 2,
+      annotation.height * scale + padding * 2
+    );
   } else if (annotation.type === 'DRAWING') {
-    // Draw bounding box around drawing
     if (annotation.points.length > 0) {
-      let minX = Infinity,
-        minY = Infinity,
-        maxX = -Infinity,
-        maxY = -Infinity;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
       annotation.points.forEach((point) => {
         const transformed = viewTransformation.apply(point);
         minX = Math.min(minX, transformed.x);
@@ -118,14 +174,8 @@ export const drawAnnotationSelection = (
         maxX = Math.max(maxX, transformed.x);
         maxY = Math.max(maxY, transformed.y);
       });
-
       const padding = 8;
-      ctx.strokeRect(
-        minX - padding,
-        minY - padding,
-        maxX - minX + padding * 2,
-        maxY - minY + padding * 2
-      );
+      ctx.strokeRect(minX - padding, minY - padding, maxX - minX + padding * 2, maxY - minY + padding * 2);
     }
   }
 

@@ -15,6 +15,21 @@ export const createTextAnnotation = (id, position, text = '', style = {}) => ({
   },
 });
 
+export const createRectangleAnnotation = (id, position, width, height, style = {}) => ({
+  id,
+  type: 'RECTANGLE',
+  position,
+  width: Math.abs(width),
+  height: Math.abs(height),
+  style: {
+    strokeColor: style.strokeColor || '#4a90d9',
+    strokeWidth: style.strokeWidth || 2,
+    fillColor: style.fillColor || '#4a90d9',
+    fillOpacity: style.fillOpacity !== undefined ? style.fillOpacity : 0,
+    ...style,
+  },
+});
+
 export const createDrawingAnnotation = (id, points = [], style = {}) => ({
   id,
   type: 'DRAWING',
