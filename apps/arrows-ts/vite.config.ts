@@ -25,12 +25,6 @@ export default defineConfig({
     host: 'localhost',
   },
 
-  resolve: {
-    alias: {
-      'react-recompose': 'recompose',
-    },
-  },
-
   plugins: [
     react(),
     viteTsConfigPaths({
