@@ -7,7 +7,7 @@ import {createStore, applyMiddleware} from 'redux'
 
 import reducer from './reducers'
 
-import registerServiceWorker from './registerServiceWorker'
+import { unregister as unregisterServiceWorker } from './registerServiceWorker'
 import 'semantic-ui-css/semantic.min.css'
 import {viewportMiddleware} from "./middlewares/viewportMiddleware"
 import {storageMiddleware} from "./middlewares/storageMiddleware";
@@ -52,4 +52,4 @@ root.render(
   </StrictMode>
 );
 
-registerServiceWorker()
+unregisterServiceWorker()
