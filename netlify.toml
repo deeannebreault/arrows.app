@@ -5,8 +5,8 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
-  VITE_SHARE_URL = "https://srv1410555.hstgr.cloud"
-  VITE_WS_URL = "wss://srv1410555.hstgr.cloud/collab-ws"
+  VITE_SHARE_URL = "https://openclaw-vps-1.tail904520.ts.net:8443"
+  VITE_WS_URL = "wss://openclaw-vps-1.tail904520.ts.net:8443/collab-ws"
   VITE_API_KEY = "74715ca86107aef7c069ecc38d12e126656ed627464919f9ac471dbc5d17c75c"
 
 # SPA routing: all paths serve index.html
