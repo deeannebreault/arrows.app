@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npx nx run arrows-ts:build --skip-nx-cache"
   publish = "dist/apps/arrows-ts"
 
 [build.environment]
