@@ -10,17 +10,19 @@ Edit this file directly to add, update, or check off tasks.
 
 ## In Progress / Next Up
 
-### Verify GitHub Pages Deployment
-**Status:** Merging to main should have triggered the deploy workflow.
+### Verify Netlify Collab Deploy
+**Status:** Push to main triggered Netlify rebuild with VITE_SHARE_URL + VITE_WS_URL set.
 
 **Check:**
-1. Visit GitHub Actions tab on the repo
-2. Confirm `deploy.yml` workflow ran successfully
-3. Test the live Pages URL
+1. Netlify dashboard — confirm build completed successfully
+2. Open `https://arrows-app-deeslab.netlify.app`
+3. Click Share — session URL should appear (no error)
+4. Open session URL in two tabs — changes should sync
 
-**If failing:**
-- Check `.github/workflows/deploy.yml` base URL config
-- Ensure Pages source is set to "GitHub Actions" in repo Settings → Pages
+**Backend (always-on on VPS):**
+- Share API: `https://srv1410555.hstgr.cloud/api/health`
+- WS server: `wss://srv1410555.hstgr.cloud/collab-ws`
+- nginx + Let's Encrypt SSL (auto-renews)
 
 ---
 
@@ -52,6 +54,10 @@ Edit this file directly to add, update, or check off tasks.
 - [x] Merged feature/text-and-drawing → main
 - [x] claude-historian-mcp registered
 - [x] CLAUDE.md updated with session start checklist
+- [x] Real-time collaboration system built (WS server + share API + Redux middleware)
+- [x] nginx + Let's Encrypt SSL configured on VPS (srv1410555.hstgr.cloud)
+- [x] Backend servers committed to repo (server/) with Render config as backup
+- [x] Netlify env vars set (VITE_SHARE_URL, VITE_WS_URL) for collab backend
 
 ---
 
