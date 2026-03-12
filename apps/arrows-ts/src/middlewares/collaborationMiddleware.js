@@ -4,6 +4,7 @@ import { constructGraphFromFile } from '../storage/googleDriveStorage'
 // Use Vite env vars if set, otherwise use proxied relative paths (works for both local and remote access)
 const WS_URL = (import.meta.env?.VITE_WS_URL) || (window.location.origin.replace(/^http/, 'ws') + '/collab-ws')
 const SHARE_URL = (import.meta.env?.VITE_SHARE_URL) || ''
+const HEARTBEAT_INTERVAL = 30000 // 30 seconds
 
 export const collabUrlRegex = /^#\/collab\/(.+)/
 
@@ -13,6 +14,8 @@ let _remoteUpdate = false
 let debounceTimer = null
 let reconnectDelay = 1000
 let storeRef = null
+let heartbeatInterval = null
+let lastPongTime = Date.now()
 
 function getUserId() {
   let id = sessionStorage.getItem('collab_user_id')
@@ -27,7 +30,32 @@ function getUserName() {
   return sessionStorage.getItem('collab_user_name') || 'Anonymous'
 }
 
+function stopHeartbeat() {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval)
+    heartbeatInterval = null
+  }
+}
+
+function startHeartbeat() {
+  stopHeartbeat()
+  lastPongTime = Date.now()
+  heartbeatInterval = setInterval(() => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      // Send ping and check for stale connection
+      const timeSinceLastPong = Date.now() - lastPongTime
+      if (timeSinceLastPong > HEARTBEAT_INTERVAL * 2) {
+        console.warn('[collab] Connection stale, forcing reconnect')
+        ws.close()
+        return
+      }
+      ws.send(JSON.stringify({ type: 'ping' }))
+    }
+  }, HEARTBEAT_INTERVAL)
+}
+
 function disconnect() {
+  stopHeartbeat()
   if (ws) {
     ws.onclose = null // prevent reconnect loop
     ws.close()
@@ -51,6 +79,7 @@ function connect(id, store) {
   ws.onopen = () => {
     console.log('[collab] Connected to session', id)
     reconnectDelay = 1000
+    startHeartbeat()
     store.dispatch({ type: 'SET_COLLAB_SESSION', sessionId: id, userId: getUserId() })
   }
 
@@ -61,10 +90,16 @@ function connect(id, store) {
     } catch (e) {
       return
     }
+    // Handle pong for heartbeat
+    if (msg.type === 'pong') {
+      lastPongTime = Date.now()
+      return
+    }
     handleServerMessage(msg, store)
   }
 
   ws.onclose = () => {
+    stopHeartbeat()
     console.log('[collab] Disconnected, reconnecting in', reconnectDelay, 'ms')
     setTimeout(() => {
       if (sessionId) connect(sessionId, storeRef)
